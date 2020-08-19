@@ -100,9 +100,14 @@ export class OrderService {
 
   }
 
-  public acceptDraft(userID: string, orderID: string): Promise<any>{
+  public acceptAllDraft(userID: string, orderID: string): Promise<any>{
     const ref = this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}`)
     return ref.update({accepted: true})
+  }
+
+  public acceptSingleDraft(userID: string, orderID: string, projectId: string): Promise<any> {
+    const ref = this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/draft/${projectId}/image`)
+    return ref.update({ accepted: true })
   }
 
   public chageDraft(userID: string, orderID: string, projectNumber: any,imgId: any,modalform: string): Promise<any>{

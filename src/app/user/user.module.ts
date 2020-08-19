@@ -18,6 +18,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgFileDragDropModule } from 'ng-file-drag-drop';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { DraftWorkListComponent } from './draft-work-list/draft-work-list.component';
+import { SuccessOrderComponent } from './success-order/success-order.component';
+import 'hammerjs';
 
 
 
@@ -32,7 +34,8 @@ import { DraftWorkListComponent } from './draft-work-list/draft-work-list.compon
     DraftWorkComponent,
     GraphicComponent,
     NumeroPipe,
-    DraftWorkListComponent],
+    DraftWorkListComponent,
+    SuccessOrderComponent],
   imports: [
     CommonModule,
     NgFileDragDropModule,

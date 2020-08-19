@@ -44,7 +44,7 @@ import { UserService } from '../services/user.service';
       <mat-tab label="Ordini in lavorazione"><app-work-list></app-work-list></mat-tab>
       <mat-tab label="Aggiungi Bozze Progetti" *ngIf="user.utente == 'grafico'"><app-draft-work></app-draft-work></mat-tab>
       <mat-tab label="Visualizza Bozze"><app-draft-work-list (dataOut)="setOut($event)"></app-draft-work-list></mat-tab>
-      <mat-tab label="Ordini confermati"></mat-tab>
+      <mat-tab label="Ordini confermati"><app-success-order></app-success-order></mat-tab>
   </mat-tab-group>
   `,
   styles: [
