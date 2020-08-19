@@ -1,0 +1,63 @@
+<app-error [msgError]="msgError"></app-error>
+<div class="card">
+  <h5 class="card-header info-color white-text text-center py-4">
+    <strong class="display-4">Sign in</strong>
+  </h5>
+  <div class="card-body px-lg-5 pt-0">
+<form class="bg-light p-5"#mioform="ngForm" (ngSubmit)="onSubmit(mioform.value)">
+
+  <div>
+    <label for="name">Nome: </label>
+    <input class="form-control" type="text" name="name" (ngModel)="name" #name="ngModel" required>
+    <div [hidden]="name.valid || name.pristine " class="alert-danger">
+      Nome Obbligatorio
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="mobile">Telefono: </label>
+    <input class="form-control" type="text" name="mobile" (ngModel)="mobile" #mobile="ngModel" required pattern="[0-9]*" minlength="10"  maxlength="10">
+    <div [hidden]="mobile.valid || mobile.pristine" class="alert-danger">
+      Telefono Obbligatorio
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="email">email: </label>
+    <input type="email" class="form-control" name="email" #email="ngModel" (ngModel)="email" required pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+    <div [hidden]="email.valid || email.pristine">
+      <div class="alert-danger" [hidden]="email.hasError('pattern')">Format email is invalid</div>
+      <div class="alert-danger" [hidden]="email.hasError('required')">Email required</div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="password">Password: </label>
+    <input class="form-control" type="password" required name="password" (ngModel)="password" #password="ngModel">
+    <div class="alert-danger" [hidden]="password.valid || password.pristine">
+      Error Password
+    </div>
+    <div class="alert-danger" [hidden]="password.valid || password.pristine">
+      Error Password
+    </div>
+  </div>
+
+    <div class="form-group">
+      <label for="check">Registrati come </label>
+      <mat-radio-group class="form-control" [(ngModel)]="user" name="utente" (ngModel)="utente" #utente="ngModel" required>
+      <mat-radio-button value="grafico">Grafico</mat-radio-button>
+      <mat-radio-button value="rappresentante">Rappresentante</mat-radio-button>
+      </mat-radio-group>
+    </div>
+
+    <div *ngIf="user=='rappresentante'" class="form-group">
+      <label for="graficoId">Se hai un grafico inserisci la sua email</label>
+      <input class="form-control" type="text" name="graficoEmail" (ngModel)="graficoEmail" #graficoEmail="ngModel" placeholder="email grafico">
+    </div>
+
+  <button type="submit" mat-raised-button color="primary" [disabled]="!mioform.valid">Invia</button>
+
+</form>
+</div>
+</div>
+

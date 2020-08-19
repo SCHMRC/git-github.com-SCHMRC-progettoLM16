@@ -1,0 +1,21 @@
+<table class="table table-striped mat-elevation-z8">
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">email</th>
+      <th scope="col">Identificativo</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users | keyvalue;index as i">
+
+        <th *ngIf="user.value.utente !== 'grafico'" scope="row">{{user.value.name}}</th>
+        <td *ngIf="user.value.utente !== 'grafico'">{{user.value.email}}</td>
+        <td *ngIf="user.value.utente !== 'grafico'">{{user.value.uId}}</td>
+
+    </tr>
+  </tbody>
+</table>
+
+
+

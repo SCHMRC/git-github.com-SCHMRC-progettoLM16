@@ -1,0 +1,128 @@
+
+<div *ngIf="user.utente == 'grafico'">
+  <form>
+  <mat-form-field appearance="fill">
+    <mat-label>Seleziona Id rappresentante</mat-label>
+    <select matNativeControl [(ngModel)]="selectedIDR" name="select" (change)="onSubmit()">
+      <option value="" selected></option>
+      <option *ngFor="let user of users | keyvalue" [value]="user.value.uId">
+        {{user.value.name}}
+      </option>
+    </select>
+  </mat-form-field>
+  </form>
+</div>
+
+<mat-form-field>
+  <input matInput type="text" id="x" [(ngModel)]="input" placeholder="Cerca per nome" name="input" #myinput
+    (input)="search()">
+  <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
+
+
+<!---->
+
+<div class="container" *ngFor="let element of elementdata | keyvalue ;index as i">
+  <mat-accordion>
+    <mat-expansion-panel (opened)="panelOpenState[i] = true" (closed)="panelOpenState[i] = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title style="width: 312px;">
+          <b>{{element.value.nome}}</b>
+
+
+        </mat-panel-title>
+        <mat-panel-description>
+          {{element.value.data}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+
+
+      <div class="m-3 p-3 mat-elevation-z8" *ngFor="let progetto of element.value.progetto | keyvalue;index as k">
+        <div *ngIf="progetto;else eliminato">
+          <h1>Elemento numero <span class="badge badge-secondary">{{k+1}}</span>
+            <span [hidden]="element.value.progetto.length == 1" class="float-right">
+              <button (click)="removeItem(element.value.id,k)" type="button" matTooltip="Rimuovi Elemento" mat-mini-fab
+                color="warn" aria-label="Example icon button with a filter list icon">
+                <mat-icon>clear</mat-icon>
+              </button></span></h1>
+          <div class="jumbotron blue-grey lighten-5">
+            <div class="container">
+              <h1 class="display-4">Cliente: {{element.value.nome}}</h1>
+              <p class="lead">{{progetto.value.materiale}} <span *ngIf="progetto.value.calpestabile">
+                  Calpestabile</span></p>
+              <div *ngIf="progetto.colore" class="container">
+                <div class="row">
+                  <p class="lead mr-3">Colore: </p>
+                  <div id="circle" [ngStyle]="{'background': progetto.value.colore}"></div>
+                </div>
+              </div>
+              <p *ngIf="progetto.value.forma" class="lead">Forma: {{progetto.value.forma}}</p>
+              <p *ngIf="progetto.value.opalino" class="lead">Opalino</p>
+              <p *ngIf="progetto.value.spessore" class="lead">Spessore: {{progetto.value.spessore}} mm</p>
+              <p *ngIf="progetto.value.laminazione" class="lead">Laminazione: {{progetto.value.laminazione}}</p>
+              <p class="lead">Copie: {{progetto.value.copie}}</p>
+              <p class="lead" *ngIf="progetto.value.diametro">Diametro: {{progetto.value.diametro}} cm</p>
+              <p class="lead" *ngIf="progetto.value.lato">Lato: {{progetto.value.lato}} cm</p>
+              <p class="lead" *ngIf="progetto.value.base">Base: {{progetto.value.base}} cm</p>
+              <p class="lead" *ngIf="progetto.value.altezza">Altezza: {{progetto.value.altezza}} cm</p>
+              <p class="lead" *ngIf="progetto.value.luminosa">Luminosa</p>
+              <p *ngIf="progetto.value.palo" class="lead">Altezza palo: {{progetto.value.palo}} m</p>
+              <p *ngIf="progetto.value.pieghe" class="lead">Pieghe</p>
+              <p *ngIf="progetto.value.occhielli" class="lead">Occhielli</p>
+              <p *ngIf="progetto.value.bifacciale" class="lead">Bifacciale</p>
+              <p class="lead">Note: {{progetto.value.note}}</p>
+            </div>
+          </div>
+
+          <div class="container">
+            <div class="row justify-content-center">
+              <mat-card class="example-card m-4" *ngFor="let image of progetto.value.image | keyvalue; index as j">
+                <mat-card-header>
+                  <div mat-card-avatar class="example-header-image"></div>
+                  <mat-card-title>{{element['nome']}}</mat-card-title>
+                  <mat-card-subtitle>allegato numero {{j+1}}</mat-card-subtitle>
+                </mat-card-header>
+                <img mat-card-image src="{{image['value']}}" alt="">
+                <mat-card-content>
+                </mat-card-content>
+                <mat-card-actions>
+                  <button mat-button (click)="removeImg(image['key'])">RIMUOVI</button>
+                </mat-card-actions>
+              </mat-card>
+            </div>
+          </div>
+
+          <div *ngIf="user.utente == 'grafico'"><b>Nome File:</b> {{element.value.nome}} - copie {{progetto.value.copie}} - {{progetto.value.materiale}}
+            <span *ngIf="progetto.value.calpestabile">Calpestabile</span>
+            <span *ngIf="progetto.value.luminosa">{{progetto.value.luminosa}}</span>
+            <span *ngIf="progetto.value.opalino">- {{progetto.value.opalino}}</span>
+            <span *ngIf="progetto.value.palo">- Altezza palo: {{progetto.value.palo}} m</span>
+            <span *ngIf="progetto.value.base">- misura {{progetto.value.base}}x{{progetto.value.altezza}}cm</span>
+            <span *ngIf="progetto.value.diametro">- diametro {{progetto.value.diametro}}cm</span>
+            <span *ngIf="progetto.value.laminazione">- laminazione {{progetto.value.laminazione}}</span>
+            <span *ngIf="progetto.value.pieghe">- Pieghe</span>
+            <span *ngIf="progetto.value.occhielli">- Occhielli</span>
+            <span *ngIf="progetto.value.bifacciale">- Bifacciale</span>
+          </div>
+
+
+
+
+
+        </div>
+
+      </div>
+      <button (click)="removeOrder(element.value.oid)" class="float-right" mat-raised-button color="warn">Elimina
+        Ordine</button>
+
+
+      <ng-template #eliminato>
+        <div class="alert-danger">
+          PROGETTO ELIMINATO!
+        </div>
+
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

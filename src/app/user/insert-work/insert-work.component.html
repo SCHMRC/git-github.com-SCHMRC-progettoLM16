@@ -1,0 +1,172 @@
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+  <mat-vertical-stepper #linearVerticalStepper="matVerticalStepper" formArrayName="formArray" [linear]="true">
+    <mat-step formGroupName="0" [stepControl]="formArray.get([0])">
+      <ng-template matStepLabel>Inserisci il nome del cliente</ng-template>
+      <mat-form-field appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input id="test" matInput formControlName="nome" required>
+        <mat-error>Il nome è necessario</mat-error>
+      </mat-form-field>
+    </mat-step>
+
+
+    <mat-step formGroupName="1" [stepControl]="formArray.get([1])">
+      <ng-template matStepLabel>Inserire il numero di elementi</ng-template>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Quantità elementi</mat-label>
+        <input matInput formControlName="elementi_progetto" placeholder="numero di elementi" (change)="isChange($event)"
+          required type="number" min="1" max="15" name="elementi"  #elementi>
+        <mat-error>il numero degli elementi deve essere compreso tra 1 e 15</mat-error>
+      </mat-form-field>
+    </mat-step>
+
+
+    <mat-step *ngFor='let key of pezzi | numero; let i = index' [stepControl]="formList[i]" required>
+      <form [formGroup]="formList[i]" required>
+        <ng-template matStepLabel>Descrizione Elemento <em>{{i+1}}</em></ng-template>
+
+
+        <section class="example-section">
+          <mat-form-field appearance="outline" class="pl-2">
+            <mat-label>Materiale</mat-label>
+            <mat-select formControlName="materiale" required>
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let element of tipo" value="{{element}}">{{element}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-checkbox *ngIf="formList[i].value['materiale'] == 'Adesivo'" class="example-margin" formControlName="calpestabile">Calpestabile</mat-checkbox>
+        </section>
+
+        <section *ngIf="formList[i].value['materiale']=='Insegna'" class="example-section pl-2">
+          <div class="alert alert-warning" role="alert">
+            "Insegna" si intende compreso di cassonetto
+          </div>
+          <mat-checkbox class="example-margin" formControlName="bifacciale">Bifacciale</mat-checkbox>
+          <mat-checkbox class="example-margin" formControlName="luminosa">Luminosa</mat-checkbox>
+          <mat-form-field appearance="outline">
+            <mat-label>lunghezza palo espressa in metri</mat-label>
+            <input matInput formControlName="palo" type="number">
+          </mat-form-field>
+        </section>
+
+        <section class="example-section pl-2" *ngIf="formList[i].value['materiale'] == 'Prespaziato'">
+          <div class="alert alert-warning" role="alert">
+            se il colore non è selezionato verrà utilizzato di default il colore nero
+          </div>
+          <mat-form-field appearance="outline">
+            <mat-label [hidden]="formList[i].value['materiale'] !== 'Prespaziato'">colore prespaziato</mat-label>
+            <input matInput formControlName="colore" type="color">
+          </mat-form-field>
+        </section>
+
+        <section class="example-section pl-2" *ngIf="formList[i].value['materiale'] == 'Plex'">
+          <section>
+            <mat-checkbox class="example-margin" formControlName="opalino">Opalino</mat-checkbox>
+          </section>
+          <mat-form-field appearance="outline">
+            <mat-label>colore Plex</mat-label>
+            <input matInput formControlName="colore" type="color">
+          </mat-form-field>
+        </section>
+
+
+
+        <section class="example-section" *ngIf="formList[i].value['materiale'] == 'Adesivo'">
+          <div class="pl-2">
+            <label>Tipo di laminazione</label>
+            <div>
+              <mat-radio-group formControlName="laminazione" appearance="outline" class="pl-2"
+                aria-label="Select an option">
+                <mat-radio-button value="lucida">Lucida</mat-radio-button>
+                <mat-radio-button value="opaca">Opaca</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+        </section>
+
+        <section *ngIf="formList[i].value['materiale'] == 'Banner'">
+          <mat-checkbox class="example-margin" formControlName="bifacciale">Bifacciale</mat-checkbox>
+          <mat-checkbox class="example-margin" formControlName="pieghe">Pieghe</mat-checkbox>
+          <mat-checkbox class="example-margin" formControlName="occhielli">Occhielli</mat-checkbox>
+        </section>
+
+
+        <section class="example-section" *ngIf="formList[i].value['materiale'] !== 'Banner' && formList[i].value['materiale'] !== 'Adesivo'
+        && formList[i].value['materiale'] !== 'Prespaziato' && formList[i].value['materiale'] !== 'Insegna'">
+          <mat-form-field appearance="outline" class="pl-2">
+            <mat-label>Spessore in millimetri</mat-label>
+            <mat-select formControlName="spessore">
+              <mat-option>None</mat-option>
+              <mat-option *ngFor="let element of spessore" value="{{element}}">{{element}} mm</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </section>
+
+        <section class="example-section">
+          <mat-form-field appearance="outline" class="pl-2">
+            <mat-label>Numero copie</mat-label>
+            <input matInput formControlName="copie" type="number" required>
+            <mat-error>Devi Inserire almenno una copia</mat-error>
+          </mat-form-field>
+            <mat-form-field  appearance="outline" class="pl-2">
+              <mat-label>Forma</mat-label>
+              <mat-select formControlName="forma" required>
+                <mat-option value="Rettangolo">Rettangolo</mat-option>
+                <mat-option *ngFor="let element of forma" value="{{element}}">{{element}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+        </section>
+
+        <section>
+          <mat-form-field *ngIf="formList[i].value['forma'] == 'Cerchio'" appearance="outline" class="pl-2">
+            <mat-label>Diametro</mat-label>
+            <input matInput formControlName="diametro" placeholder="espresso in cm" type="number">
+          </mat-form-field>
+
+          <mat-form-field *ngIf="formList[i].value['forma'] == 'Quadrato'" appearance="outline" class="pl-2">
+            <mat-label>Misura Lato</mat-label>
+            <input matInput formControlName="lato" placeholder="espresso in cm" type="number">
+          </mat-form-field>
+
+          <mat-form-field *ngIf="formList[i].value['forma'] !== 'Cerchio' && formList[i].value['forma'] !== 'Quadrato'" appearance="outline" class="pl-2">
+            <mat-label>Base</mat-label>
+            <input matInput formControlName="base" placeholder="espresso in cm" type="number">
+          </mat-form-field>
+
+          <mat-form-field *ngIf="formList[i].value['forma'] !== 'Cerchio' && formList[i].value['forma'] !== 'Quadrato'" appearance="outline" class="pl-2">
+            <mat-label>Altezza</mat-label>
+            <input matInput formControlName="altezza" placeholder="espresso in cm" type="number">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="pl-2">
+            <mat-label>Allega File</mat-label>
+            <ngx-mat-file-input #removableInput formControlName="multiplefile" multiple>
+            </ngx-mat-file-input>
+            <button mat-icon-button matSuffix *ngIf="!removableInput.empty" (click)="removableInput.clear($event)">
+              <mat-icon>clear</mat-icon>
+            </button>
+            <mat-icon matSuffix *ngIf="removableInput.empty">folder</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="pl-2">
+            <mat-label>Note</mat-label>
+            <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
+              formControlName="note" cdkAutosizeMaxRows="5"></textarea>
+          </mat-form-field>
+        </section>
+      </form>
+    </mat-step>
+
+    <mat-step>
+      <ng-template matStepLabel>Conferma Invio</ng-template>
+      Controlla tutti i passaggi ed eventualmente modifica
+      <div>
+        <button mat-button type="submit" [disabled]="!formGroup.valid">Invia</button>
+        <button type="button" mat-button (click)="linearVerticalStepper.reset()">Reset</button>
+        <button type="button" mat-button (click)="linearVerticalStepper.reset()">Nuovo Ordine</button>
+      </div>
+    </mat-step>
+  </mat-vertical-stepper>
+</form>
+

@@ -1,0 +1,34 @@
+<div *ngIf="show">
+<form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+<mat-form-field>
+  <mat-label>Seleziona Ordine</mat-label>
+  <mat-select class="mdb-select md-form colorful-select dropdown-primary" name="orderID" formControlName="orderID">
+    <mat-option *ngFor="let element of orders | keyvalue" value="{{element.key}}">{{element.value.nome}}</mat-option>
+  </mat-select>
+</mat-form-field>
+  <button class="btn btn-block btn-primary" type="submit">Verifica Bozze</button>
+</form>
+
+
+<div class="container" *ngIf="result">
+  <div class="row justify-content-center  mat-elevation-z18">
+    <span class="card m-2" *ngFor="let image of urlimg ; index as i" style="width: 18rem;">
+      <img class="card-img-top" [src]="image.src" alt="id progetto{{image.idproject}}" (click)="open(i)"
+        style="position: relative;">
+      <div class="card-body">
+        <p>id Bozza: {{image.idproject}}</p>
+        <p *ngIf="image.modifiche">modifiche da apportare: {{image.modifiche}}</p>
+      </div>
+    </span>
+  </div>
+</div>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modifica" (click)="modal()">
+    Modifiche da apportare
+  </button>
+  <button class="btn btn-success float-right" (click)="accept()">Accetta Bozza</button>
+
+
+</div>
+
+
+

@@ -1,0 +1,21 @@
+.example-full-width {
+  width: 100%;
+}
+.example-margin {
+  margin: 0 10px;
+}
+.option {
+  display: block;
+  flex: auto;
+  padding: 0 .75em 0 .75em;
+  margin-top: -0.25em;
+  border: 1px lightgray solid;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+  position: relative;
+  min-width: 0;
+  width: 180px;
+}
+
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}

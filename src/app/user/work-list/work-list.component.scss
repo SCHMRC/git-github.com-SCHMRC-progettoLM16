@@ -1,0 +1,29 @@
+.example-card {
+  max-width: 400px;
+}
+
+.example-header-image {
+  background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+  background-size: cover;
+}
+.example-headers-align {
+  flex-basis: 0;
+  align-items: center;
+}
+#circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%
+
+    }
+
+    /* Structure */
+table {
+  width: 100%;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
