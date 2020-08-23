@@ -17,6 +17,7 @@ export class OrderService {
   list: any[] = [];
   order: Order[] = [];
   listIdImg: BehaviorSubject<any[]> = new BehaviorSubject(null);
+  reset: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(private angularFireDatabase: AngularFireDatabase, private userService: UserService, private storageStorage: StorageService) { }
 
@@ -55,6 +56,14 @@ export class OrderService {
     this.listIdImg.next(listIdImg);
   }
 
+  public setReset$(param: boolean){
+    this.reset.next(param)
+  }
+
+  public getReset$(): BehaviorSubject<boolean> {
+    return this.reset;
+  }
+
 
   public control(userId: string) {
 
@@ -85,7 +94,7 @@ export class OrderService {
 
   public removeOrder(orderId: string, orderIdKey: string, userID: string): Promise<void> {
     this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderId}`).remove()
-    this.storageStorage.removeOrderImg(userID, orderId)
+    //this.storageStorage.removeOrderImg(userID, orderId)
     return this.angularFireDatabase.database.ref(`${PATH}/${userID}/idProjectFK/${orderIdKey}`).remove()
 
 

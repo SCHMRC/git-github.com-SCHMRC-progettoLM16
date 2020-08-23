@@ -1,0 +1,11 @@
+<div class="dropzone" dropzone (hovered)="toggleHover($event)" (dropped)="onDrop($event)" [class.hovering]="isHovering">
+  <h3>Drop Zone</h3>
+  <p>Trascina qui i file</p>
+</div>
+
+<div class="row">
+  <div class="card mr-2" style="max-width: 15rem;" *ngFor="let file of files">
+    <app-upload-task (dataOut)="setImg($event)" [file]="file"></app-upload-task>
+  </div>
+</div>
+

@@ -38,6 +38,7 @@
     "moment": "^2.27.0",
     "ng-file-drag-drop": "0.0.2",
     "ngp-sort-pipe": "0.0.4",
+    "ngx-file-drop": "^9.0.1",
     "ngx-lightbox": "^2.2.0",
     "ngx-material-file-input": "^2.1.1",
     "ngx-toastr": "^13.0.0",

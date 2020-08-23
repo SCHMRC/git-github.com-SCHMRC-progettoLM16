@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/storage';
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { User } from './user';
 import { FILE_PATH, ORDER_PATH } from './path';
-import { BehaviorSubject } from 'rxjs';
-import { isGeneratedFile } from '@angular/compiler/src/aot/util';
+import { BehaviorSubject, Observable } from 'rxjs';
 //tslint:disable
 
 @Injectable({
@@ -14,15 +13,18 @@ export class StorageService {
   private basePath = 'file';
   private draftPath = 'draft';
   subject: BehaviorSubject<any> = new BehaviorSubject(null);
+  percentage: Observable<number>;
+  imgUrl$: BehaviorSubject<string> = new BehaviorSubject(null);
+  imgUrllist$: BehaviorSubject<string[][]> = new BehaviorSubject(null);
 
   constructor(private angularFireStorage: AngularFireStorage, private angularFireDatabase: AngularFireDatabase) {
 
   }
 
 
-  storageFile(user: User, projectNumber: any, order: any, file: File){
+  /*storageFile(user: User, projectNumber: any, order: any, file: File){
     const ref = this.angularFireStorage.ref(`${this.basePath}/${user.uId}/${order['id']}/${file.name}`);
-    setTimeout(() => {
+
       ref.put(file)
         .then(() => {
           ref.getDownloadURL().subscribe(url => {
@@ -32,7 +34,47 @@ export class StorageService {
         )
         .catch(() => {
         });
-    } , 500)
+
+
+  }*/
+
+  getUrlImg(): BehaviorSubject<string> {
+    return this.imgUrl$
+  }
+
+  setUrlImg(urlImg: string){
+    this.imgUrl$.next(urlImg)
+  }
+
+  getUrlImglist(): BehaviorSubject<string[][]> {
+    return this.imgUrllist$
+  }
+
+  setUrlImglist(urlImg: string[][]) {
+    this.imgUrllist$.next(urlImg)
+  }
+
+  storageFile(user: User, projectNumber: any, order: any, file: File[]) {
+    Object.entries(file).forEach(([key,file])=>{
+      if(file !== undefined){
+        const ref = this.angularFireStorage.storage.ref(`${this.basePath}/${user.uId}/${order['id']}/${projectNumber}/${file.name}`)
+        const task: AngularFireUploadTask = this.angularFireStorage.upload(`${this.basePath}/${user.uId}/${order['id']}/${projectNumber}/${file.name}`, file)
+        this.percentage = task.percentageChanges();
+      }
+    })
+
+   /* const ref = this.angularFireStorage.ref(`${this.basePath}/${user.uId}/${order['id']}/${file.name}`);
+
+    ref.put(file)
+      .then(() => {
+        ref.getDownloadURL().subscribe(url => {
+          this.angularFireDatabase.list(`${ORDER_PATH}/${user.uId}/${order['id']}/progetto/${projectNumber}/image`).push(url)
+        });
+      }
+      )
+      .catch(() => {
+      });*/
+
 
   }
 
@@ -50,20 +92,15 @@ export class StorageService {
     })
   }
 
-  deleteFile(pathToFile, fileName) {
-    const ref = this.angularFireStorage.storage.ref(pathToFile);
-    const childRef = ref.child(fileName);
-    childRef.delete()
+
+  removeImgFk(userId: string, orderId: string, projectNumber: string, filename: string): Promise<any> {
+    return this.angularFireDatabase.database.ref(`order/${userId}/${orderId}/progetto/${projectNumber}/image/${filename}`).remove();
+
   }
 
-  //TODO riuscire a rimuovere un file dallo storage
-  public removeOrderImg(userID: string, order: any){
-    let imgRef = this.angularFireStorage.storage.ref(`${this.basePath}}/${userID}/${order}`)
-    imgRef.listAll().then(dir => {
-      dir.items.forEach(fileRef => {
-        console.log(fileRef.name)
-        this.deleteFile(imgRef.fullPath, fileRef.name);
-      });
-    });
+
+  public removeOrderImg(userID: string, orderId: any, filename: string){
+    let imgRef = this.angularFireStorage.storage.ref(`${this.basePath}/${userID}/${orderId}`).child(filename)
+    imgRef.delete()
   }
 }

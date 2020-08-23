@@ -14,7 +14,7 @@ export class UserService {
   subject: BehaviorSubject<User> = new BehaviorSubject(null);
   authenticated: BehaviorSubject<boolean> = new BehaviorSubject(null);
   project: BehaviorSubject<any> = new BehaviorSubject(null);
-
+  orderId: BehaviorSubject<string> = new BehaviorSubject(null);
   constructor(private angularFireDatabase: AngularFireDatabase) { }
 
 
@@ -25,6 +25,19 @@ export class UserService {
   public getUser(uid: string): Observable<any>{
     return this.angularFireDatabase.object(`${PATH}/${uid}`).valueChanges();
   }
+
+  public getOrderId(): BehaviorSubject<string> {
+    return this.orderId;
+  }
+
+  public setOrderId(orderId: string){
+    this.orderId.next(orderId);
+  }
+
+
+
+
+
 
   public setProject(param: any){
     this.project.next(param);

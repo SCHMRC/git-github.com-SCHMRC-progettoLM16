@@ -12,8 +12,8 @@ import { UserService } from 'src/app/services/user.service';
 export class LoginComponent implements OnInit {
   msgError: any;
   show = false;
-  email1 = 'schiavo.marco05@gmail.com'
-  password1 = 'qwerty'
+  email1 = ''
+  password1 = ''
 
   constructor(private router: Router, private authService: AuthService, private userService: UserService) { }
 

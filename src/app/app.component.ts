@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
+import { StorageService } from './services/storage.service';
 import { UserService } from './services/user.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { UserService } from './services/user.service';
 export class AppComponent implements OnInit{
   show = false;
 
-  constructor(private userService: UserService, private authService: AuthService, private router: Router) {}
+  constructor(private storageService: StorageService, private userService: UserService, private authService: AuthService, private router: Router) {}
 
   ngOnInit(){
     this.userService.getAuthenticated().subscribe(
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit{
   exit() {
     this.authService.exit().then(
       () => {
+        this.storageService.setUrlImglist(null);
         this.userService.setSubject(null);
         this.userService.setAuthenticated(false);
         this.router.navigateByUrl('home');

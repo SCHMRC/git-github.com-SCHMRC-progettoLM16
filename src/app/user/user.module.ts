@@ -19,6 +19,10 @@ import { NgFileDragDropModule } from 'ng-file-drag-drop';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { DraftWorkListComponent } from './draft-work-list/draft-work-list.component';
 import { SuccessOrderComponent } from './success-order/success-order.component';
+import { NgxFileDropModule } from 'ngx-file-drop';
+import { DropzoneDirective } from './../services/dropzone.directive';
+import { UploadTaskComponent } from './../shared/uploader/upload-task/upload-task.component';
+import { UploaderComponent } from './../shared/uploader/uploader.component';
 import 'hammerjs';
 
 
@@ -29,6 +33,9 @@ import 'hammerjs';
 @NgModule({
   declarations: [
     COMPONENTS,
+    DropzoneDirective,
+    UploadTaskComponent,
+    UploaderComponent,
     WorkListComponent,
     InsertWorkComponent,
     DraftWorkComponent,
@@ -41,6 +48,7 @@ import 'hammerjs';
     NgFileDragDropModule,
     MDBBootstrapModule.forRoot(),
     NgxDatatableModule,
+    NgxFileDropModule,
     LightboxModule,
     ToastrModule.forRoot(),
     ButtonModule,

@@ -4,6 +4,7 @@ import { UserService } from 'src/app/services/user.service';
 import { Order } from 'src/app/services/order';
 import { User } from 'src/app/services/user';
 import { GraphicService } from 'src/app/services/graphic.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 
 
@@ -31,7 +32,10 @@ export class WorkListComponent implements OnInit {
 
 
 
-  constructor(private orderService: OrderService, private userService: UserService, private graphicService: GraphicService, private graphic: GraphicService) {
+  constructor(private orderService: OrderService,
+    private userService: UserService,
+     private graphicService: GraphicService,
+     private storageService: StorageService) {
 
   }
 
@@ -41,7 +45,7 @@ export class WorkListComponent implements OnInit {
       this.init$()
     }
 
-    this.graphic.getAllUser().subscribe((data) => {
+    this.graphicService.getAllUser().subscribe((data) => {
       Object.entries(data).forEach(([key,value])=>{
         if (value['utente'] !== 'grafico'){
           this.users.push(new User(value['name'], value['email'], value['mobile'], value['utente'], value['uId'], value['graficoEmail']))
@@ -112,6 +116,7 @@ export class WorkListComponent implements OnInit {
             this.order.push(new Order(value['data'], value['id'], value['nome'], value['pezzi'], value['progetto']))
           })
           this.elementdata = this.order
+
         }
       )
     }
@@ -144,7 +149,15 @@ export class WorkListComponent implements OnInit {
 
   }
 
-  removeImg(keyImg: string) {
+  removeImg(orderId: string, projectNumber: string, valueImg: string, keyImg: string) {
+    let img = valueImg.split('?')
+    let imgx = img[0].split('%2F')
+   this.storageService.removeImgFk(this.user.uId, orderId, projectNumber,keyImg).then(
+      () => {
+        this.storageService.removeOrderImg(this.user.uId, orderId, imgx[3])
+      }
+    )
+
 
   }
 

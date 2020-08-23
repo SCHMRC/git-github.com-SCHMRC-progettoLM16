@@ -8,6 +8,7 @@ import { AppRoutingModule, COMPONENTS } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgpSortModule } from 'ngp-sort-pipe';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { NgxFileDropModule } from 'ngx-file-drop';
 
 
 
@@ -28,10 +29,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 
+
+
+
 @NgModule({
   declarations: [
     AppComponent,
-    COMPONENTS
+    COMPONENTS,
   ],
   imports: [
     BrowserModule,
@@ -39,6 +43,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ToastrModule.forRoot(),
     MaterialModule,
     AuthModule,
+    NgxFileDropModule,
     UserModule,
     AppRoutingModule,
     NgpSortModule,

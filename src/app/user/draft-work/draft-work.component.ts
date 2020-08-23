@@ -47,10 +47,7 @@ export class DraftWorkComponent implements OnInit {
     this.graphicService.getsubjectRappresentanteID().subscribe((rappresentanteId)=>{
       this.userId = rappresentanteId;
       this.files.forEach(element => {
-        this.storageService.storageDraft(form['orderId'], form['projectId'], this.userId, element).then(() =>{
-          this.toastService.success('Hello world!', 'Toastr fun!')
-        }
-        )
+        this.storageService.storageDraft(form['orderId'], form['projectId'], this.userId, element)
       })
 
 

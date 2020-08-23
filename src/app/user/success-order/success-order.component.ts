@@ -50,9 +50,11 @@ export class SuccessOrderComponent implements OnInit {
   onSubmit() {
     this.urlimg = []
     let param = '';
-    (this.user.utente == 'rappresentante') ? param = this.user.uId : param = this.userID.getValue()
+    (this.user.utente == 'rappresentante') ? param = this.user.uId : param = this.graphicService.getsubjectRappresentanteID().getValue()
+    console.log(param)
     this.orderService.getOneDraft(param, this.orderID).then((snapshot) => {
       this.result = snapshot.val();
+
       Object.entries(this.result).forEach(([key, value]) => {
         Object.entries(value).forEach(([k, v]) => {
           let album = {
@@ -66,12 +68,13 @@ export class SuccessOrderComponent implements OnInit {
             color: 'primary',
             completed: v['accepted'],
           }
-          if (album.completed) {
+          if (album['completed']) {
             this.urlimg.push(album)
           }
 
         })
       })
+
       let task: any = {
         name: 'Seleziona Tutto',
         completed: false,
@@ -79,7 +82,7 @@ export class SuccessOrderComponent implements OnInit {
         subtasks: this.urlimg
       }
       this.task = task;
-    });
+    }).catch(error => {console.log(error)});
     this.orderService.setIdImg(this.urlimg);
   }
 

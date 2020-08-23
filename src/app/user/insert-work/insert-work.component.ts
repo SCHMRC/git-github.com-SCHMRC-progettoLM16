@@ -1,20 +1,17 @@
-import { Component, OnInit, NgZone, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, NgZone, ViewChild, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, AbstractControl, Validators } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatInput } from '@angular/material/input';
-import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { OrderService } from 'src/app/services/order.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { User } from 'src/app/services/user';
 import { UserService } from 'src/app/services/user.service';
 import { TIPO, SPESSORE } from './../../services/material-list';
-import { map, take, filter, pluck } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import * as Rx from 'rxjs';
-import * as Operators from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
-import * as id from 'shortid';
 import * as moment from 'moment';
 //tslint:disable
 
@@ -24,10 +21,12 @@ import * as moment from 'moment';
   styleUrls: ['./insert-work.component.scss']
 })
 export class InsertWorkComponent implements OnInit {
+  dragDropConfig = {
+    showList: true,
+    showProgress: true
+  };
   isEditable = false;
   erroMsg: any;
-  check: boolean[] = [false];
-  lista: any[] = []
   tipo: string[] = [];
   spessore: number[] = [];
   project: Object[] = [];
@@ -35,11 +34,13 @@ export class InsertWorkComponent implements OnInit {
   order: Object;
   subject: Rx.BehaviorSubject<any> = new Rx.BehaviorSubject(null);
   showModal: Rx.BehaviorSubject<boolean> = new Rx.BehaviorSubject(false);
-  enter: Rx.BehaviorSubject<any> = new Rx.BehaviorSubject(null);
   @ViewChild('autosize') autosize: CdkTextareaAutosize;
-  show = false;
   key: number;
   forma: any[] = [];
+  miostile: Object;
+  imageUrl: string[][] = [];
+  reset: boolean = false;
+
 
 
   formGroup: FormGroup;
@@ -51,19 +52,23 @@ export class InsertWorkComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService,
-    private storageService: StorageService,
     private userService: UserService,
     private orderService: OrderService,
     private _ngZone: NgZone,
     private toastr: ToastrService) {
     this.tipo = TIPO;
     this.spessore = SPESSORE;
+    this.miostile = {
+      width: '200px',
+      height: '200px',
+      border: 'solid 1px black',
+    }
 
 
   }
 
   ngOnInit(): void {
+
 
     this.forma = [
       'Quadrato',
@@ -98,14 +103,16 @@ export class InsertWorkComponent implements OnInit {
   }
 
 
-
   onSubmit() {
     this.project = [];
-    let obj = { nome: [{nome: 'ciao'}]}
     let count = 0;
     this.formList.forEach(element => {
+      let urlL: string[] = [];
+      (this.imageUrl[count]) ? urlL = this.imageUrl[count] : urlL = [null]
+
       this.project.push(
         {
+          image: urlL,
           projectNumber: count++,
           insegna: element['value']['insegna'],
           luminosa: element['value']['luminosa'],
@@ -125,15 +132,15 @@ export class InsertWorkComponent implements OnInit {
           diametro: element['value']['diametro'],
           copie: element['value']['copie'],
           bifacciale: element['value']['bifacciale'],
-          multiplefile: element['value']['multiplefile'],
           note: element['value']['note']
         })
+
     });
 
 
     this.order =
     {
-      id: id.generate(),
+      id: this.userService.getOrderId().getValue(),
       nome: this.formGroup['value']['formArray'][0]['nome'],
       data: moment().format('lll'),
       pezzi: this.formGroup['value']['formArray'][1]['elementi_progetto'],
@@ -141,32 +148,19 @@ export class InsertWorkComponent implements OnInit {
       progetto: this.project
     }
 
-    this.project.forEach(element => {
-      if (element !== null) {
-        if (element['multiplefile']['files'] !== undefined) {
-          element['multiplefile']['files'].forEach((file: File) => {
-            this.storageService.storageFile(this.userService.getSubject().value, element['projectNumber'], this.order, file)
-          })
-
-        }
-      }
-    });
     this.userService.setProject(this.project);
     this.userService.getSubject().subscribe((user) => {
       this.orderService.insertOrder(user, this.order)
       this.orderService.control(user.uId)
     })
     this.userService.updateListOrder(this.order)
-
-
     this.showSuccess()
   }
 
-  public isChecked(event: MatCheckboxChange, index: number) {
-    this.check[index] = event.checked;
-  }
 
   public isChange(event: MatInput) {
+    this.orderService.setReset$(true)
+    this.imageUrl= []
     this.pezzi = event['target']['value'];
     this.subject.next(this.setLista(this.pezzi))
     this.subject.subscribe((data) => {
@@ -205,12 +199,15 @@ export class InsertWorkComponent implements OnInit {
           lato: new FormControl(''),
           diametro: new FormControl(''),
           bifacciale: new FormControl(),
-          multiplefile: new FormControl(['']),
           note: new FormControl()
         })
     }
     return form
 
+  }
+
+  setOut(event, numero) {
+    this.imageUrl[numero]= event
   }
 
   showSuccess() {

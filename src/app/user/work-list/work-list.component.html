@@ -42,7 +42,7 @@
         <div *ngIf="progetto;else eliminato">
           <h1>Elemento numero <span class="badge badge-secondary">{{k+1}}</span>
             <span [hidden]="element.value.progetto.length == 1" class="float-right">
-              <button (click)="removeItem(element.value.id,k)" type="button" matTooltip="Rimuovi Elemento" mat-mini-fab
+              <button (click)="removeItem(element.value.oid,progetto.value.projectNumber)" type="button" matTooltip="Rimuovi Elemento" mat-mini-fab
                 color="warn" aria-label="Example icon button with a filter list icon">
                 <mat-icon>clear</mat-icon>
               </button></span></h1>
@@ -75,7 +75,7 @@
             </div>
           </div>
 
-          <div class="container">
+          <div *ngIf="progetto.value.image" class="container">
             <div class="row justify-content-center">
               <mat-card class="example-card m-4" *ngFor="let image of progetto.value.image | keyvalue; index as j">
                 <mat-card-header>
@@ -87,7 +87,8 @@
                 <mat-card-content>
                 </mat-card-content>
                 <mat-card-actions>
-                  <button mat-button (click)="removeImg(image['key'])">RIMUOVI</button>
+                  <button mat-button (click)="removeImg(element.value.oid,progetto.value.projectNumber,image.value, image.key)">RIMUOVI</button>
+                  <button mat-button>MODIFICA</button>
                 </mat-card-actions>
               </mat-card>
             </div>
