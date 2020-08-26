@@ -27,6 +27,7 @@ export class WorkListComponent implements OnInit {
   user: User;
   users: User[] = [];
   selectedIDR: string;
+  show: boolean = false;
 
 
 
@@ -43,6 +44,7 @@ export class WorkListComponent implements OnInit {
     this.user = this.userService.getSubject().getValue();
     if (this.user.utente == 'rappresentante') {
       this.init$()
+
     }
 
     this.graphicService.getAllUser().subscribe((data) => {
@@ -124,10 +126,19 @@ export class WorkListComponent implements OnInit {
       this.orderService.getAllOrder$(this.user.uId).subscribe(
         (data) => {
           this.reset()
-          Object.entries(data).forEach(([key, value]) => {
-            this.order.push(new Order(value['data'], value['id'], value['nome'], value['pezzi'], value['progetto']))
-          })
-          this.elementdata = this.order
+          if (data === undefined || data == null) {
+            this.show = true
+          } else {
+            this.show = false;
+            Object.entries(data).forEach(([key, value]) => {
+              this.order.push(new Order(value['data'], value['id'], value['nome'], value['pezzi'], value['progetto']))
+            })
+            this.elementdata = this.order
+          }
+
+
+
+
         }
       )
 

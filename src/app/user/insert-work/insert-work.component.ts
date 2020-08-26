@@ -13,6 +13,8 @@ import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import * as Rx from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
+import {Project} from './../../services/project';
+import { Order } from 'src/app/services/order';
 //tslint:disable
 
 @Component({
@@ -29,9 +31,9 @@ export class InsertWorkComponent implements OnInit {
   erroMsg: any;
   tipo: string[] = [];
   spessore: number[] = [];
-  project: Object[] = [];
+  project: Project[] = [];
   user: User;
-  order: Object;
+  order: Order;
   subject: Rx.BehaviorSubject<any> = new Rx.BehaviorSubject(null);
   showModal: Rx.BehaviorSubject<boolean> = new Rx.BehaviorSubject(false);
   @ViewChild('autosize') autosize: CdkTextareaAutosize;
@@ -92,14 +94,21 @@ export class InsertWorkComponent implements OnInit {
         }),
       ])
     });
+    this.order = new Order(
+      moment().format('lll'),
+      this.userService.getOrderId().getValue(),
+      this.formGroup['value']['formArray'][0]['nome'],
+      this.formGroup['value']['formArray'][1]['elementi_progetto'],
+      this.project
+    )
 
-    this.order =
+    /*this.order =
     {
       nome: this.formGroup['value']['formArray'][0]['nome'],
       data: moment().format('LLL'),
       pezzi: this.formGroup['value']['formArray'][1]['elementi_progetto'],
       progetto: this.project
-    }
+    }*/
   }
 
 
@@ -114,7 +123,6 @@ export class InsertWorkComponent implements OnInit {
         {
           image: urlL,
           projectNumber: count++,
-          insegna: element['value']['insegna'],
           luminosa: element['value']['luminosa'],
           palo: element['value']['palo'],
           forma: element['value']['forma'],
@@ -137,8 +145,16 @@ export class InsertWorkComponent implements OnInit {
 
     });
 
+    this.order = new Order(
+      moment().format('lll'),
+      this.userService.getOrderId().getValue(),
+      this.formGroup['value']['formArray'][0]['nome'],
+      this.formGroup['value']['formArray'][1]['elementi_progetto'],
+      this.project
+    )
 
-    this.order =
+
+    /*this.order =
     {
       id: this.userService.getOrderId().getValue(),
       nome: this.formGroup['value']['formArray'][0]['nome'],
@@ -146,7 +162,7 @@ export class InsertWorkComponent implements OnInit {
       pezzi: this.formGroup['value']['formArray'][1]['elementi_progetto'],
       accepted: false,
       progetto: this.project
-    }
+    }*/
 
     this.userService.setProject(this.project);
     this.userService.getSubject().subscribe((user) => {
@@ -181,7 +197,6 @@ export class InsertWorkComponent implements OnInit {
     for (let i = 0; i < this.pezzi; i++) {
       form[i] =
         new FormGroup({
-          insegna: new FormControl(),
           luminosa: new FormControl(),
           calpestabile: new FormControl(),
           palo: new FormControl(),

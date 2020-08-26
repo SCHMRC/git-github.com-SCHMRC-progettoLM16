@@ -80,16 +80,18 @@ export class StorageService {
 
   storageDraft(orderID: string, projectNumber: any, userID: string , files: File): Promise<any> {
     const ref = this.angularFireStorage.ref(`${this.draftPath}/${userID}/${orderID}/${files.name}`);
-    return ref.put(files).then(()=>{
+    return ref.put(files).then(() => {
       ref.getDownloadURL().subscribe(url => {
         this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/draft/${projectNumber}/image`).update(
           {
             accepted: false,
             img: url
           }
-          )
+        )
       })
     })
+
+
   }
 
 

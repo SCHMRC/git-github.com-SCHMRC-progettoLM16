@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { PATH, FILE_PATH, ORDER_PATH } from './../services/path';
+import { Order } from './order';
 import { User } from './user';
 //tslint:disable
 
@@ -77,11 +78,11 @@ export class UserService {
 
   }
 
-  public updateListOrder(order: any){
+  public updateListOrder(order: Order){
     const user = this.getSubject().getValue();
     let idProjectFKList: any;
     //metodo equivalente al sottostante -> this.angularFireDatabase.list<any>(`${PATH}/${user.uId}/idProjectFK`).push(order.id)
-    this.angularFireDatabase.database.ref(`${PATH}/${user.uId}/idProjectFK`).push(order.id)
+    this.angularFireDatabase.database.ref(`${PATH}/${user.uId}/idProjectFK`).push(order.oid)
   }
 
   public getFile(user: User, project: any): Observable<any[]> {

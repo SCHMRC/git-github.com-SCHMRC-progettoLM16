@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { MatTabChangeEvent } from '@angular/material/tabs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { GraphicService } from '../services/graphic.service';
 import { OrderService } from '../services/order.service';
 import { User } from '../services/user';
 import { UserService } from '../services/user.service';
@@ -38,7 +40,7 @@ import { UserService } from '../services/user.service';
     </div>
   </div>
 </div>
-    <mat-tab-group animationDuration="0ms"  mat-align-tabs="center">
+    <mat-tab-group animationDuration="0ms"  mat-align-tabs="center" #tabGroup (selectedTabChange)="tabChanged($event)">
       <mat-tab label="Rappresentanti" *ngIf="user.utente == 'grafico'"><app-graphic></app-graphic></mat-tab>
       <mat-tab label="Inserisci Ordine" *ngIf="user.utente !== 'grafico'"><app-insert-work></app-insert-work></mat-tab>
       <mat-tab label="Ordini in lavorazione"><app-work-list></app-work-list></mat-tab>
@@ -55,7 +57,9 @@ export class UserComponent implements OnInit {
   show: boolean;
   listIdImg: any[] = [];
 
-  constructor(private userService: UserService, private orderService: OrderService) { }
+  data = false;
+
+  constructor(private userService: UserService, private orderService: OrderService, private graphicService: GraphicService) { }
 
   ngOnInit(): void {
 
@@ -79,5 +83,17 @@ export class UserComponent implements OnInit {
     const word = selected.split(',');
     this.orderService.chageDraft(user.uId, word[2]  , word[1], word[0], modalform['message']).then(
       () => {});
+  }
+
+  /**
+   * permette di verificarsi dell'evento change nei tab material
+   * @param tabChangeEvent
+   */
+  tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
+    const label =  tabChangeEvent.tab.textLabel;
+    // console.log('index => ', tabChangeEvent.index);
+
+    (label === 'Ordini confermati') ? this.graphicService.setSubject(true) : this.graphicService.setSubject(false);
+
   }
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Order } from 'src/app/services/order';
+import { Project } from 'src/app/services/project';
 import { OrderService } from 'src/app/services/order.service';
 import { UserService } from 'src/app/services/user.service';
 import { Lightbox } from 'ngx-lightbox';
@@ -23,8 +23,10 @@ export class DraftWorkListComponent implements OnInit {
   userID = this.graphicService.getsubjectRappresentanteID();
   registrationForm: FormGroup;
   urlimg: Array<any> = [];
+  progetti: Project[] = [];
   show = false;
   checked: boolean;
+  data:any
 
 /**/
   task: any = {
@@ -38,10 +40,12 @@ export class DraftWorkListComponent implements OnInit {
 
   @Output() dataOut = new EventEmitter()
 
+
   constructor(private graphicService: GraphicService, private lightbox: Lightbox, private orderService: OrderService, private userService: UserService) { }
 
   ngOnInit(): void {
     this.checked = false;
+    this.orders = [];
     if(this.user.utente == 'rappresentante'){
       this.orderService.getAllOrder(this.user.uId).then((snapshot) => {
         this.orders = snapshot.val();
@@ -60,35 +64,75 @@ export class DraftWorkListComponent implements OnInit {
   onSubmit(){
     this.urlimg = []
     let param = '';
-    (this.user.utente == 'rappresentante')?  param = this.user.uId :  param = this.userID.getValue()
+    (this.user.utente == 'rappresentante') ? param = this.user.uId : param = this.graphicService.getsubjectRappresentanteID().getValue()
     this.orderService.getOneDraft(param, this.orderID).then((snapshot) => {
       this.result = snapshot.val();
-      Object.entries(this.result).forEach(([key,value])=>{
-        Object.entries(value).forEach(([k,v])=>{
-           let  album = {
-              src: v['img'],
-              caption: `identificativo della bozza: ${key}`,
-              thumb: '',
-              idproject: key,
-              modifiche: v['modifiche'],
-              orderId: this.orderID,
-              name: 'Primary',
-              color: 'primary',
-              completed: v['accepted'],
-          }
-          if(!album.completed){
-            this.urlimg.push(album)
-          }
 
+
+        Object.entries(this.result['progetto']).forEach(([key, value]) => {
+          let progetto: Project = {
+            luminosa: value['luminosa'],
+            palo: value['palo'],
+            forma: value['forma'],
+            materiale: value['materiale'],
+            spessore: value['spessore'],
+            laminazione: value['laminazione'],
+            calpestabile: value['calpestabile'],
+            colore: value['colore'],
+            opalino: value['opalino'],
+            pieghe: value['pieghe'],
+            occhielli: value['occhielli'],
+            base: value['base'],
+            altezza: value['altezza'],
+            lato: value['lato'],
+            diametro: value['diametro'],
+            copie: value['copie'],
+            bifacciale: value['bifacciale'],
+          }
+          this.progetti.push(progetto)
         })
-      })
-      let task: any = {
-        name: 'Seleziona Tutto',
-        completed: false,
-        color: 'primary',
-        subtasks: this.urlimg
+
+      if (this.result['draft']) {
+        Object.entries(this.result['draft']).forEach(([key, value]) => {
+          let album = {
+            src: value['image']['img'],
+            caption: `identificativo della bozza: ${key} `,
+            thumb: '',
+            idproject: key,
+            modifiche: value['image']['modifiche'],
+            orderId: this.orderID,
+            name: 'Primary',
+            color: 'primary',
+            completed: value['image']['accepted'],
+          }
+          if(this.graphicService.getSubject().getValue()){
+            if (album['completed']) {
+              this.urlimg.push(album)
+            }
+          } else {
+            if (!album['completed']) {
+              this.urlimg.push(album)
+            }
+          }
+        })
+
+        if (this.urlimg.length === 0) {
+          this.show = false;
+          return
+        }
+        let task: any = {
+          name: 'Seleziona Tutto',
+          completed: false,
+          color: 'primary',
+          subtasks: this.urlimg
+        }
+        this.task = task;
+        this.show = true
+      }else{
+        this.show = false
+
       }
-      this.task = task;
+
     });
     this.orderService.setIdImg(this.urlimg);
   }
@@ -144,6 +188,19 @@ export class DraftWorkListComponent implements OnInit {
       return;
     }
     this.task.subtasks.forEach(t => t.completed = this.checked);
+  }
+
+  removeDraft() {
+    let rappId = this.userID.getValue();
+    console.log(this.urlimg);
+    Object.entries(this.urlimg).forEach(([key,value])=>{
+      if(value['completed']){
+        this.orderService.removeSingleDraft(rappId, this.orderID, value['idproject']).then(() => { console.log('ok') })
+      }
+    })
+   /* Object.entries(this.task.subtasks).forEach(([key, value]) => {
+      this.orderService.removeSingleDraft(rappId, this.orderID, value['idproject']).then(()=>{console.log('ok')})
+    })*/
   }
 
 

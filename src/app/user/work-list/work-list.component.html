@@ -15,13 +15,22 @@
 
 <mat-form-field>
   <input matInput type="text" id="x" [(ngModel)]="input" placeholder="Cerca per nome" name="input" #myinput
-    (input)="search()">
+    (input)="search()" [disabled]="show">
   <mat-icon matSuffix>search</mat-icon>
 </mat-form-field>
 
 
 <!---->
 
+<div *ngIf="show" class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Elenco Vuoto</h1>
+    <p class="lead">Non ci sono ordini presenti, puoi aggiungeli nella sezione Inserisci Ordini</p>
+  </div>
+</div>
+
+<!---->
+<div *ngIf="elementdata">
 <div class="container" *ngFor="let element of elementdata | keyvalue ;index as i">
   <mat-accordion>
     <mat-expansion-panel (opened)="panelOpenState[i] = true" (closed)="panelOpenState[i] = false">
@@ -126,4 +135,5 @@
       </ng-template>
     </mat-expansion-panel>
   </mat-accordion>
+</div>
 </div>

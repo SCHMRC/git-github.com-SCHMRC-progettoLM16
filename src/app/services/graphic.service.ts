@@ -9,6 +9,7 @@ import { User } from './user';
   providedIn: 'root'
 })
 export class GraphicService {
+  subject: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   subjectRappresentanteID: BehaviorSubject<string> = new BehaviorSubject(null)
 
@@ -28,5 +29,13 @@ export class GraphicService {
 
   temp() {
 
+  }
+
+  setSubject(param: boolean){
+    this.subject.next(param);
+  }
+
+  getSubject(){
+    return this.subject;
   }
 }

@@ -1,25 +1,3 @@
-<div class="container mat-elevation-z18" *ngIf="show">
-  <form #myform="ngForm" (ngSubmit)="onSubmit()">
-    <mat-form-field>
-      <mat-label>Seleziona Ordine</mat-label>
-      <mat-select class="mdb-select md-form colorful-select dropdown-primary" name="orderID" [(ngModel)]="orderID"
-        (selectionChange)="onSubmit()">
-        <mat-option *ngFor="let element of orders | keyvalue" value="{{element.key}}">{{element.value.nome}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </form>
-
-
-  <div class="jumbotron" *ngIf="result">
-    <div class="row justify-content-center">
-      <span class="card m-2" *ngFor="let image of task.subtasks ; index as i" style="width: 10rem;">
-
-        <img class="card-img-top" [src]="image.src" alt="id progetto{{image.idproject}}" (click)="open(i)"
-          style="position: relative;">
-
-      </span>
-    </div>
-  </div>
+  <app-draft-work-list></app-draft-work-list>
 
 

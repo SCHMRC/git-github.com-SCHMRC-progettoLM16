@@ -4,6 +4,7 @@ import { Order } from 'src/app/services/order';
 import { OrderService } from 'src/app/services/order.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { ToastrService } from 'ngx-toastr';
+import { Project } from 'src/app/services/project';
 
 //tslint:disable
 @Component({
@@ -17,7 +18,7 @@ export class DraftWorkComponent implements OnInit {
     showProgress: true
   };
   orderIDList: Order[] = [];
-  projectList: any;;
+  projectList: any;
   selected = '';
   pid: number;
   userId: string;

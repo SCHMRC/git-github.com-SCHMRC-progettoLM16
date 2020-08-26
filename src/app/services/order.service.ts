@@ -23,9 +23,9 @@ export class OrderService {
 
 
 
-  insertOrder(user: User, order: Object): Promise<any> {
+  insertOrder(user: User, order: Order): Promise<any> {
 
-    return this.angularFireDatabase.object<any>(`${ORDER_PATH}/${user.uId}/${order['id']}`).set(order);
+    return this.angularFireDatabase.object<any>(`${ORDER_PATH}/${user.uId}/${order.oid}`).set(order);
 
 
   }
@@ -45,7 +45,7 @@ export class OrderService {
   }
 
   public getOneDraft(userID: string, orderID: string): Promise<any> {
-    return this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/draft`).once('value')
+    return this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/`).once('value')
   }
 
   public getIdImg(): BehaviorSubject<any[]>{
@@ -117,6 +117,11 @@ export class OrderService {
   public acceptSingleDraft(userID: string, orderID: string, projectId: string): Promise<any> {
     const ref = this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/draft/${projectId}/image`)
     return ref.update({ accepted: true })
+  }
+
+  public removeSingleDraft(userID: string, orderID: string, projectId: string): Promise<any> {
+    const ref = this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/draft/${projectId}`)
+    return ref.remove();
   }
 
   public chageDraft(userID: string, orderID: string, projectNumber: any,imgId: any,modalform: string): Promise<any>{

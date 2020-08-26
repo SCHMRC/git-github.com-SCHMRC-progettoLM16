@@ -1,4 +1,4 @@
-<div class="container mat-elevation-z18" *ngIf="show">
+
   <form #myform="ngForm" (ngSubmit)="onSubmit()">
     <mat-form-field>
       <mat-label>Seleziona Ordine</mat-label>
@@ -9,7 +9,7 @@
     </mat-form-field>
   </form>
 
-
+<div class="container mat-elevation-z18" *ngIf="show;else alt">
   <div class="jumbotron" *ngIf="result">
     <div class="row justify-content-center">
       <span class="card m-2" *ngFor="let image of task.subtasks ; index as i" style="width: 10rem;">
@@ -20,14 +20,24 @@
           id Bozza: {{image.idproject}}
         </div>
         <div class="card-body">
-          <p *ngIf="image.modifiche">modifiche da apportare: {{image.modifiche}}</p>
+          <p>Nome File: {{progetti[i]['materiale']}} - spessore {{progetti[i]['spessore']}} mm - copie {{progetti[i]['copie']}}</p>
+
+          <span *ngIf="progetti[i]['calpestabile']">Calpestabile</span>
+          <span *ngIf="progetti[i]['luminosa']">{{progetti[i]['luminosa']}}</span>
+          <span *ngIf="progetti[i]['opalino']">- {{progetti[i]['opalino']}}</span>
+          <span *ngIf="progetti[i]['palo']">- Altezza palo: {{progetti[i]['palo']}} m</span>
+          <span *ngIf="progetti[i]['base']">- misura {{progetti[i]['base']}}x{{progetti[i]['altezza']}}cm</span>
+          <span *ngIf="progetti[i]['diametro']">- diametro {{progetti[i]['diametro']}}cm</span>
+          <span *ngIf="progetti[i]['laminazione']">- laminazione {{progetti[i]['laminazione']}}</span>
+          <span *ngIf="progetti[i]['pieghe']">- Pieghe</span>
+          <span *ngIf="progetti[i]['occhielli']">- Occhielli</span>
+          <span *ngIf="progetti[i]['bifacciale']">- Bifacciale</span>
         </div>
         <div class="card-footer">
           <mat-label>Seleziona il songolo elemento da confermare</mat-label>
           <mat-checkbox class="float-right" [(ngModel)]="image.completed"
             value="{{image.idproject}}"></mat-checkbox>
         </div>
-
       </span>
     </div>
   </div>
@@ -43,7 +53,7 @@
 
 
 
-
+      <button class="btn btn-danger mr-3 waves-light rounded-pill" mdbBtn mdbWavesEffect type="button" (click)="removeDraft()">Rimuovi Bozza</button>
 
 
         <button class="btn btn-success mr-3 waves-light rounded-pill" mdbBtn mdbWavesEffect type="button" (click)="accept()">Accetta Bozza</button>
@@ -53,3 +63,8 @@
 
 
 </div>
+<ng-template #alt>
+  <div class="jumbotron">
+    Non ci sono Bozze da visualizzare
+    </div>
+</ng-template>

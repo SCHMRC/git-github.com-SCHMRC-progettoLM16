@@ -5,7 +5,10 @@ export const TIPO: string[] = [
   'Semiespanso',
   'DiBond',
   'Plex',
-  'Insegna'
+  'Insegna',
+  'OneWay',
+  'Tela Pittorica',
+  'Parato'
 ];
 
 export const SPESSORE: number[] = [3, 5, 10];
