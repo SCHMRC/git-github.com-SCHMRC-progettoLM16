@@ -8,7 +8,7 @@
         <mat-form-field appearance="fill" class="mr-2">
           <mat-label>Seleziona</mat-label>
           <mat-select name="orderId" (ngModel)="orderId" #orderId="ngModel" [(ngModel)]="selected" required>
-            <mat-option *ngFor="let element of projectList | keyvalue ; index as i" [value]="element.value.id">
+            <mat-option *ngFor="let element of projectList | keyvalue ; index as i" [value]="element.value.oid">
               {{element.value.nome}}
             </mat-option>
           </mat-select>
@@ -19,8 +19,10 @@
           <input matInput type="number" name="projectId" (ngModel)="projectId" #projectId="ngModel" [(ngModel)]="pid" required>
         </mat-form-field>
 
+
+
         <span *ngFor="let progetti of projectList | keyvalue">
-           <div *ngIf="progetti.value.id === selected">
+           <div *ngIf="progetti.value.oid === selected">
             <div *ngFor="let progetto of progetti.value.progetto | keyvalue">
               <ul>
                 <li class="media">

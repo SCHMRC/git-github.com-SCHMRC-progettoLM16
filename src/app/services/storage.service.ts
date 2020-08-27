@@ -4,6 +4,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 import { User } from './user';
 import { FILE_PATH, ORDER_PATH } from './path';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { finalize, tap } from 'rxjs/operators';
 //tslint:disable
 
 @Injectable({
@@ -16,6 +17,9 @@ export class StorageService {
   percentage: Observable<number>;
   imgUrl$: BehaviorSubject<string> = new BehaviorSubject(null);
   imgUrllist$: BehaviorSubject<string[][]> = new BehaviorSubject(null);
+  snapshot: Observable<any>;
+  downloadURL: string;
+  task: AngularFireUploadTask;
 
   constructor(private angularFireStorage: AngularFireStorage, private angularFireDatabase: AngularFireDatabase) {
 
@@ -54,12 +58,20 @@ export class StorageService {
     this.imgUrllist$.next(urlImg)
   }
 
-  storageFile(user: User, projectNumber: any, order: any, file: File[]) {
+  storageFile(user: string, projectNumber: any, order: string, file: File[]) {
     Object.entries(file).forEach(([key,file])=>{
       if(file !== undefined){
-        const ref = this.angularFireStorage.storage.ref(`${this.basePath}/${user.uId}/${order['id']}/${projectNumber}/${file.name}`)
-        const task: AngularFireUploadTask = this.angularFireStorage.upload(`${this.basePath}/${user.uId}/${order['id']}/${projectNumber}/${file.name}`, file)
-        this.percentage = task.percentageChanges();
+        const path = `${this.basePath }/${user}/${order}/${file.name}`;
+
+        // Reference to storage bucket
+        const ref = this.angularFireStorage.ref(path);
+        ref.put(file)
+        .then(() => {
+          ref.getDownloadURL().subscribe(url => {
+            this.angularFireDatabase.database.ref(`${ORDER_PATH}/${user}/${order}/progetto/${projectNumber}/image`).push(url)
+          })
+
+        })
       }
     })
 
@@ -97,12 +109,16 @@ export class StorageService {
 
   removeImgFk(userId: string, orderId: string, projectNumber: string, filename: string): Promise<any> {
     return this.angularFireDatabase.database.ref(`order/${userId}/${orderId}/progetto/${projectNumber}/image/${filename}`).remove();
-
   }
 
 
-  public removeOrderImg(userID: string, orderId: any, filename: string){
-    let imgRef = this.angularFireStorage.storage.ref(`${this.basePath}/${userID}/${orderId}`).child(filename)
-    imgRef.delete()
+  public removeOrderImg(userID: string, orderId: any, filename: string): Promise<any>{
+    let imgRef = this.angularFireStorage.storage.ref(`${this.basePath}/${userID}/${orderId}/${filename}`)
+    return imgRef.delete()
+  }
+
+  /*TODO: implementare la funzione di aggiornamento immagine*/
+  public update(userId: string,orderId,projectNumber,newFile){
+    this.storageFile(userId, projectNumber, orderId, newFile)
   }
 }

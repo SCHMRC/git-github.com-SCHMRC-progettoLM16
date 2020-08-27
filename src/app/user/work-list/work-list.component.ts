@@ -85,7 +85,7 @@ export class WorkListComponent implements OnInit {
         this.orderService.getAllOrder$(this.idRappresentante).subscribe(
           (data) => {
             Object.entries(data).forEach(([key, value]) => {
-              this.order.push(new Order(value['data'], value['id'], value['nome'], value['pezzi'], value['progetto']))
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto']))
             }
             )
             this.elementdata = this.order.filter(res => { return res.nome.match(this.input) })
@@ -98,7 +98,7 @@ export class WorkListComponent implements OnInit {
         this.orderService.getAllOrder$(this.user.uId).subscribe(
           (data) => {
             Object.entries(data).forEach(([key, value]) => {
-              this.order.push(new Order(value['data'], value['id'], value['nome'], value['pezzi'], value['progetto']))
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto']))
             }
             )
             this.elementdata = this.order.filter(res => { return res.nome.match(this.input) })
@@ -115,7 +115,7 @@ export class WorkListComponent implements OnInit {
         (data) => {
           this.reset()
           Object.entries(data).forEach(([key, value]) => {
-            this.order.push(new Order(value['data'], value['id'], value['nome'], value['pezzi'], value['progetto']))
+            this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto']))
           })
           this.elementdata = this.order
 
@@ -131,7 +131,7 @@ export class WorkListComponent implements OnInit {
           } else {
             this.show = false;
             Object.entries(data).forEach(([key, value]) => {
-              this.order.push(new Order(value['data'], value['id'], value['nome'], value['pezzi'], value['progetto']))
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto']))
             })
             this.elementdata = this.order
           }
@@ -160,12 +160,16 @@ export class WorkListComponent implements OnInit {
 
   }
 
-  removeImg(orderId: string, projectNumber: string, valueImg: string, keyImg: string) {
+  removeImg(orderId: string, projectNumber: string, valueImg: string, keyImg: string): Promise<any> {
     let img = valueImg.split('?')
-    let imgx = img[0].split('%2F')
-   this.storageService.removeImgFk(this.user.uId, orderId, projectNumber,keyImg).then(
+    let imgx = img[0].split('%2F');
+    const regex = /%20/gi;
+    const regexcomma = /%2C/gi;
+    let temp = imgx[3].replace(regex, ' ');
+    let image = temp.replace(regexcomma, ',');
+   return this.storageService.removeImgFk(this.user.uId, orderId, projectNumber,keyImg).then(
       () => {
-        this.storageService.removeOrderImg(this.user.uId, orderId, imgx[3])
+       this.storageService.removeOrderImg(this.user.uId, orderId, image)
       }
     )
 
@@ -210,6 +214,16 @@ export class WorkListComponent implements OnInit {
         });
       });
     }
+  }
+
+  onFileInput(event, orderId, projectNumber, oldFile, keyImg: string){
+    let newFiles = event.target.files
+   this.removeImg(orderId, projectNumber, oldFile, keyImg).then(()=>{
+     this.storageService.update(this.user.uId, orderId, projectNumber, newFiles)
+    })
+
+
+
   }
 
   reset() {

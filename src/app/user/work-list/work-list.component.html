@@ -97,7 +97,10 @@
                 </mat-card-content>
                 <mat-card-actions>
                   <button mat-button (click)="removeImg(element.value.oid,progetto.value.projectNumber,image.value, image.key)">RIMUOVI</button>
-                  <button mat-button>MODIFICA</button>
+                  <button mat-button (click)="fileInput.click()">
+                    <span>MODIFICA</span>
+                    <input #fileInput type="file" (change)="onFileInput($event,element.value.oid,progetto.value.projectNumber,image.value,image.key)" style="display:none;" />
+                  </button>
                 </mat-card-actions>
               </mat-card>
             </div>

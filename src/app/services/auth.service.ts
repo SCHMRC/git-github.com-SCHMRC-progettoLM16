@@ -24,4 +24,7 @@ export class AuthService {
   public exit(): Promise<any> {
     return this.angularFireAuth.signOut();
   }
+  public current(): Promise<firebase.User>{
+    return this.angularFireAuth.currentUser;
+  }
 }

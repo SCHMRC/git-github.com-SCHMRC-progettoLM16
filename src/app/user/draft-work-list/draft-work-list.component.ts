@@ -27,6 +27,7 @@ export class DraftWorkListComponent implements OnInit {
   show = false;
   checked: boolean;
   data:any
+  successPage: boolean;
 
 /**/
   task: any = {
@@ -44,6 +45,9 @@ export class DraftWorkListComponent implements OnInit {
   constructor(private graphicService: GraphicService, private lightbox: Lightbox, private orderService: OrderService, private userService: UserService) { }
 
   ngOnInit(): void {
+    this.graphicService.getSubject().subscribe((data)=>{
+      this.successPage = data;
+    })
     this.checked = false;
     this.orders = [];
     if(this.user.utente == 'rappresentante'){
@@ -122,7 +126,6 @@ export class DraftWorkListComponent implements OnInit {
         }
         let task: any = {
           name: 'Seleziona Tutto',
-          completed: false,
           color: 'primary',
           subtasks: this.urlimg
         }
