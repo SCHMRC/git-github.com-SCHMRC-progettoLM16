@@ -9,10 +9,10 @@
     </mat-form-field>
   </form>
 
-<div class="container mat-elevation-z18" *ngIf="show;else alt">
+<div class="container mat-elevation-z5" *ngIf="show;else alt">
   <div class="jumbotron" *ngIf="result">
     <div class="row justify-content-center">
-      <span class="card m-2" *ngFor="let image of task.subtasks ; index as i" style="width: 10rem;">
+      <span class="card m-2" *ngFor="let image of task.subtasks ; index as i" style="width: 12rem;">
 
         <img class="card-img-top" [src]="image.src" alt="id progetto{{image.idproject}}" (click)="open(i)"
           style="position: relative;">
@@ -20,9 +20,7 @@
           id Bozza: {{image.idproject}}
         </div>
         <div class="card-body">
-          <span *ngIf="image.modifiche"><b>Modifiche da apportare: {{image.modifiche}}</b></span>
-          <p>Nome File: {{progetti[i]['materiale']}} - copie {{progetti[i]['copie']}}</p>
-
+          <span><b>Nome File:</b> {{nome}} - {{progetti[i]['materiale']}} - copie {{progetti[i]['copie']}}</span>
           <span *ngIf="progetti[i]['spessore']">spessore {{progetti[i]['spessore']}} mm</span>
           <span *ngIf="progetti[i]['calpestabile']"> - Calpestabile</span>
           <span *ngIf="progetti[i]['luminosa']"> - {{progetti[i]['luminosa']}}</span>
@@ -35,8 +33,11 @@
           <span *ngIf="progetti[i]['occhielli']"> - Occhielli</span>
           <span *ngIf="progetti[i]['bifacciale']"> - Bifacciale</span>
         </div>
+        <div *ngIf="image.modifiche" class="card-footer">
+          <b>Modifiche da apportare: {{image.modifiche}}</b>
+        </div>
         <div *ngIf="!successPage" class="card-footer">
-          <mat-label>Seleziona il songolo elemento da confermare</mat-label>
+          <mat-label>spunta per selezionare</mat-label>
           <mat-checkbox class="float-right" [(ngModel)]="image.completed"
             value="{{image.idproject}}"></mat-checkbox>
         </div>
@@ -61,6 +62,13 @@
         <button class="btn btn-success mr-3 waves-light rounded-pill" mdbBtn mdbWavesEffect type="button" (click)="accept()">Accetta Bozza</button>
 
 
+</div>
+
+<div class="row justify-content-center" *ngIf="result && successPage">
+  <button class="btn btn-success mr-3 waves-light rounded-pill" mdbBtn mdbWavesEffect type="button"
+    (click)="completed()">Ordine Completo</button>
+  <button class="btn btn-warning mr-3 waves-light rounded-pill" mdbBtn mdbWavesEffect type="button"
+      (click)="external()">Ordine Esterno Inviato</button>
 </div>
 
 

@@ -33,6 +33,7 @@ export class WorkListComponent implements OnInit {
 
 
 
+
   constructor(private orderService: OrderService,
     private userService: UserService,
      private graphicService: GraphicService,
@@ -85,7 +86,7 @@ export class WorkListComponent implements OnInit {
         this.orderService.getAllOrder$(this.idRappresentante).subscribe(
           (data) => {
             Object.entries(data).forEach(([key, value]) => {
-              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto']))
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'],value['external']  ,value['completed']))
             }
             )
             this.elementdata = this.order.filter(res => { return res.nome.match(this.input) })
@@ -98,7 +99,7 @@ export class WorkListComponent implements OnInit {
         this.orderService.getAllOrder$(this.user.uId).subscribe(
           (data) => {
             Object.entries(data).forEach(([key, value]) => {
-              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto']))
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'] ,value['external'] ,value['completed']))
             }
             )
             this.elementdata = this.order.filter(res => { return res.nome.match(this.input) })
@@ -115,7 +116,7 @@ export class WorkListComponent implements OnInit {
         (data) => {
           this.reset()
           Object.entries(data).forEach(([key, value]) => {
-            this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto']))
+            this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'] ,value['external']  ,value['completed']))
           })
           this.elementdata = this.order
 
@@ -131,7 +132,8 @@ export class WorkListComponent implements OnInit {
           } else {
             this.show = false;
             Object.entries(data).forEach(([key, value]) => {
-              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto']))
+              console.log(value['completed'])
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'] ,value['external'] ,value['completed']))
             })
             this.elementdata = this.order
           }

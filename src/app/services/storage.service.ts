@@ -94,7 +94,7 @@ export class StorageService {
     const ref = this.angularFireStorage.ref(`${this.draftPath}/${userID}/${orderID}/${files.name}`);
     return ref.put(files).then(() => {
       ref.getDownloadURL().subscribe(url => {
-        this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/draft/${projectNumber}/image`).update(
+        this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/draft/${projectNumber}/image`).set(
           {
             accepted: false,
             img: url

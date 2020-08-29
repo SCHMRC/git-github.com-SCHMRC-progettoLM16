@@ -104,7 +104,6 @@ export class OrderService {
 
   public removeProject(orderId: string, indexProject: number): Promise<any> {
     const user = this.userService.getSubject().getValue()
-    console.log(`${ORDER_PATH}/${user.uId}/${orderId}/progetto/${indexProject}`);
     return this.angularFireDatabase.database.ref(`${ORDER_PATH}/${user.uId}/${orderId}/progetto/${indexProject}`).remove()
 
   }
@@ -126,6 +125,17 @@ export class OrderService {
 
   public chageDraft(userID: string, orderID: string, projectNumber: any,imgId: any,modalform: string): Promise<any>{
     return this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/draft/${projectNumber}/image`).update({modifiche: modalform})
+
+  }
+
+  public setCompletedOrder(userId: string, orderId: string){
+    let path = `${ORDER_PATH}/${userId}/${orderId}`;
+    this.angularFireDatabase.database.ref(path).update({completed: true});
+  }
+
+  public setExternalOrder(userId: string, orderId: string){
+    let path = `${ORDER_PATH}/${userId}/${orderId}`;
+    this.angularFireDatabase.database.ref(path).update({ external: true });
 
   }
 }

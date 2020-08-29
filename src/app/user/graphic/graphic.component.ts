@@ -19,8 +19,6 @@ export class GraphicComponent implements OnInit {
     });
   }
 
-  test() {
-    console.log(this.graphic.temp());
-  }
+ 
 
 }

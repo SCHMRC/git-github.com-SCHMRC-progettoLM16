@@ -6,23 +6,28 @@ export class Order {
   nome: string;
   pezzi: number;
   progetto: Project[];
-  accepted = false;
+  externalWork: string;
+  external: boolean;
+  completed: boolean;
 
-  constructor(data: string, oid: string, nome: string, pezzi: number, progetto: Project[]){
+  constructor(data: string, oid: string, nome: string, pezzi: number, progetto: Project[], externalWork: string ,
+              external: boolean , completed: boolean){
     this.data = data;
     this.nome = nome;
     this.pezzi = pezzi;
     this.oid = oid;
     this.progetto = progetto;
-    this.accepted = this.getAccepted();
+    this.externalWork = externalWork;
+    this.external = external;
+    this.completed = completed;
 
   }
-  public getAccepted(){
-    return this.accepted;
+  public getCompleted(){
+    return this.completed;
   }
 
-  public setAccepted(param: boolean){
-    this.accepted = param;
+  public setCompleted(param: boolean){
+    this.completed = param;
 
   }
 }

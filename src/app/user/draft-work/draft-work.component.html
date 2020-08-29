@@ -1,4 +1,4 @@
-<div class="card" *ngIf="projectList; else alt">
+<div class="card" *ngIf="orderList; else alt">
   <h5 class="card-header info-color white-text text-center py-4">
     <strong class="display-4">Inserisci Bozza Progetto</strong>
   </h5>
@@ -7,8 +7,8 @@
       <div class="row justify-content-center">
         <mat-form-field appearance="fill" class="mr-2">
           <mat-label>Seleziona</mat-label>
-          <mat-select name="orderId" (ngModel)="orderId" #orderId="ngModel" [(ngModel)]="selected" required>
-            <mat-option *ngFor="let element of projectList | keyvalue ; index as i" [value]="element.value.oid">
+          <mat-select name="orderId" (ngModel)="orderId" #orderId="ngModel" [(ngModel)]="selectedOrderId" required (selectionChange)="onChange()">
+            <mat-option *ngFor="let element of orderList | keyvalue ; index as i" [value]="element.value.oid">
               {{element.value.nome}}
             </mat-option>
           </mat-select>
@@ -16,13 +16,17 @@
 
         <mat-form-field appearance="fill" class="mr-2">
           <mat-label>Identificativo del progetto:</mat-label>
-          <input matInput type="number" name="projectId" (ngModel)="projectId" #projectId="ngModel" [(ngModel)]="pid" required>
+          <mat-select name="projectId" (ngModel)="projectId" #projectId="ngModel" [(ngModel)]="idProject" required>
+            <mat-option *ngFor="let element of projectIdList | keyvalue ; index as i" [value]="element.value">
+              {{element.value}}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
 
 
 
-        <span *ngFor="let progetti of projectList | keyvalue">
-           <div *ngIf="progetti.value.oid === selected">
+        <span *ngFor="let progetti of orderList | keyvalue">
+           <div *ngIf="progetti.value.oid === selectedOrderId">
             <div *ngFor="let progetto of progetti.value.progetto | keyvalue">
               <ul>
                 <li class="media">

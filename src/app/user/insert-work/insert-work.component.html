@@ -21,6 +21,21 @@
       </mat-form-field>
     </mat-step>
 
+    <mat-step formGroupName="2" [stepControl]="formArray.get([2])">
+      <ng-template matStepLabel>Gestione ordine</ng-template>
+
+      <section class="example-section">
+        <mat-form-field appearance="outline" class="pl-2">
+          <mat-label>Ordine che deve essere gestito da: </mat-label>
+          <mat-select formControlName="externalWork" name="externalWork">
+            <mat-option value="interno">Lavorazione interna</mat-option>
+            <mat-option *ngFor="let element of externalWork" value="{{element}}">{{element}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </section>
+    </mat-step>
+
+
 
     <mat-step *ngFor='let key of pezzi | numero; let i = index' [stepControl]="formList[i]" required>
       <form [formGroup]="formList[i]" required>
@@ -167,7 +182,7 @@
       <div>
         <button mat-button type="submit" [disabled]="!formGroup.valid">Invia</button>
         <button type="button" mat-button (click)="linearVerticalStepper.reset()">Reset</button>
-        <button type="button" mat-button (click)="linearVerticalStepper.reset()">Nuovo Ordine</button>
+        <button type="button" mat-button (click)="linearVerticalStepper.reset(); resetValue()">Nuovo Ordine</button>
       </div>
     </mat-step>
   </mat-vertical-stepper>

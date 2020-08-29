@@ -27,6 +27,7 @@ export class DraftWorkListComponent implements OnInit {
   show = false;
   checked: boolean;
   data:any
+  nome: string;
   successPage: boolean;
 
 /**/
@@ -73,6 +74,7 @@ export class DraftWorkListComponent implements OnInit {
       this.result = snapshot.val();
 
 
+        this.nome = this.result['nome']
         Object.entries(this.result['progetto']).forEach(([key, value]) => {
           let progetto: Project = {
             luminosa: value['luminosa'],
@@ -148,7 +150,6 @@ export class DraftWorkListComponent implements OnInit {
     Object.entries(this.task.subtasks).forEach(([key,value])=> {
       if (value['completed']){
         this.orderService.acceptSingleDraft(this.user.uId, this.orderID, value['idproject'])
-        console.log(value)
       }
     })
   }
@@ -195,7 +196,6 @@ export class DraftWorkListComponent implements OnInit {
 
   removeDraft() {
     let rappId = this.userID.getValue();
-    console.log(this.urlimg);
     Object.entries(this.urlimg).forEach(([key,value])=>{
       if(value['completed']){
         this.orderService.removeSingleDraft(rappId, this.orderID, value['idproject']).then(() => { console.log('ok') })
@@ -206,6 +206,15 @@ export class DraftWorkListComponent implements OnInit {
     })*/
   }
 
+  completed(){
+    const userId = this.graphicService.getsubjectRappresentanteID().getValue()
+    this.orderService.setCompletedOrder(userId,this.orderID);
 
+  }
+
+  external(){
+    const userId = this.graphicService.getsubjectRappresentanteID().getValue()
+    this.orderService.setExternalOrder(userId, this.orderID);
+  }
 
 }

@@ -18,10 +18,13 @@ export class DraftWorkComponent implements OnInit {
     showProgress: true
   };
   orderIDList: Order[] = [];
-  projectList: any;
-  selected = '';
+  projectIdList: any[] = [];
+  orderList: any;
+  projectList: any[][] = [];
+  selectedOrderId = '';
   pid: number;
   userId: string;
+  idProject: string;
   files: File[] = [];
   test: any[] =[]
 
@@ -32,11 +35,12 @@ export class DraftWorkComponent implements OnInit {
   ngOnInit(): void {
       this.graphicService.getsubjectRappresentanteID().subscribe(
         (rappresentanteId) => {
-
           this.orderService.getAllOrder(rappresentanteId).then((snapshot) =>{
-            this.projectList = snapshot.val()
+            this.orderList = snapshot.val()
           })
         })
+
+
 
   }
 
@@ -44,17 +48,42 @@ export class DraftWorkComponent implements OnInit {
     this.files = files
   }
 
-  onSubmit(form: object){
-    this.graphicService.getsubjectRappresentanteID().subscribe((rappresentanteId)=>{
-      this.userId = rappresentanteId;
-      this.files.forEach(element => {
-        this.storageService.storageDraft(form['orderId'], form['projectId'], this.userId, element)
+  onChange(){
+    this.projectList = []
+    this.projectIdList = []
+    this.graphicService.getsubjectRappresentanteID().subscribe(
+      (rappresentanteId) => {
+        this.orderService.getAllOrder(rappresentanteId).then((snapshot) => {
+          let orderList = snapshot.val()
+          Object.entries(orderList).forEach(([key,value])=>{
+            if (key == this.selectedOrderId){
+              this.projectList.push(value['progetto'])
+            }
+          })
+          Object.entries(this.projectList).forEach(([key,value])=>{
+            Object.entries(value).forEach(([key, value]) => {
+              this.projectIdList.push(value['projectNumber'])
+
+            })
+          })
+        })
       })
 
+  }
 
+  onSubmit(form: object){
+    new Promise<any>((resolve,reject)=>{
+      this.graphicService.getsubjectRappresentanteID().subscribe((rappresentanteId) => {
+        this.userId = rappresentanteId;
+        this.files.forEach(element => {
+          this.storageService.storageDraft(this.selectedOrderId, this.idProject, this.userId, element)
+        })
+        resolve(this.toastService.success('bozza inserita correttamente'));
+      })
+    }
+    ).catch((error)=>{
+      this.toastService.error(`Qualcosa è andato storto:${error}`);
     })
-
-
   }
 
 }

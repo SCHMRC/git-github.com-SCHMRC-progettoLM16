@@ -27,8 +27,6 @@ export class UploaderComponent implements OnInit {
   constructor(private userService: UserService, private orderService: OrderService) { }
 
   ngOnInit(): void {
-    this.order = id.generate();
-    this.userService.setOrderId(this.order);
     this.orderService.getReset$().subscribe(value =>{
       if (value) {
         this.test = [];

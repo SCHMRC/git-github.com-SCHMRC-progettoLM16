@@ -15,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 import * as moment from 'moment';
 import {Project} from './../../services/project';
 import { Order } from 'src/app/services/order';
+import * as id from 'shortid';
 //tslint:disable
 
 @Component({
@@ -34,6 +35,7 @@ export class InsertWorkComponent implements OnInit {
   project: Project[] = [];
   user: User;
   order: Order;
+  orderId: string;
   subject: Rx.BehaviorSubject<any> = new Rx.BehaviorSubject(null);
   showModal: Rx.BehaviorSubject<boolean> = new Rx.BehaviorSubject(false);
   @ViewChild('autosize') autosize: CdkTextareaAutosize;
@@ -42,6 +44,7 @@ export class InsertWorkComponent implements OnInit {
   miostile: Object;
   imageUrl: string[][] = [];
   reset: boolean = false;
+  externalWork: string[] = []
 
 
 
@@ -70,6 +73,16 @@ export class InsertWorkComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.orderId = id.generate();
+    this.userService.setOrderId(this.orderId);
+    
+    this.externalWork = [
+      'City Vision',
+      'Evoluzione Stampa',
+      'Bassolino',
+      'Litolux',
+      'Promo Print',
+    ]
 
 
     this.forma = [
@@ -92,6 +105,9 @@ export class InsertWorkComponent implements OnInit {
         this.formBuilder.group({
           elementi_progetto: [1, [Validators.required, Validators.min(1), Validators.max(15)]]
         }),
+        this.formBuilder.group({
+          externalWork: ['interno']
+        }),
       ])
     });
     this.order = new Order(
@@ -99,7 +115,10 @@ export class InsertWorkComponent implements OnInit {
       this.userService.getOrderId().getValue(),
       this.formGroup['value']['formArray'][0]['nome'],
       this.formGroup['value']['formArray'][1]['elementi_progetto'],
-      this.project
+      this.project,
+      this.formGroup['value']['formArray'][2]['externalWork'],
+      false,
+      false
     )
 
     /*this.order =
@@ -150,9 +169,11 @@ export class InsertWorkComponent implements OnInit {
       this.userService.getOrderId().getValue(),
       this.formGroup['value']['formArray'][0]['nome'],
       this.formGroup['value']['formArray'][1]['elementi_progetto'],
-      this.project
+      this.project,
+      this.formGroup['value']['formArray'][2]['externalWork'],
+      false,
+      false
     )
-
 
     /*this.order =
     {
@@ -228,4 +249,13 @@ export class InsertWorkComponent implements OnInit {
   showSuccess() {
     this.toastr.success('Ordine aggiunto, in caso di eventuali dubbi verrai ricontattato!', 'Ben Fatto!');
   }
+
+  resetValue(){
+    this.project = [];
+    this.order = null;
+    this.pezzi = 1;
+    this.orderId = id.generate();
+    this.userService.setOrderId(this.orderId);
+  }
+
 }
