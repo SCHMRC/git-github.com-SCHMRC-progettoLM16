@@ -25,45 +25,51 @@
 
 
 
-        <span *ngFor="let progetti of orderList | keyvalue">
-           <div *ngIf="progetti.value.oid === selectedOrderId">
-            <div *ngFor="let progetto of progetti.value.progetto | keyvalue">
-              <ul>
-                <li class="media">
-                  <div *ngIf="progetto.value.image; else alt">
-                    <img *ngFor="let img of progetto.value.image | keyvalue" src="{{img.value}}" width="130"
-                      class="mr-3" alt="...">
-                  </div>
-                  <ng-template #alt>
-                    <img src="" alt="null img" width="130" class="mr-3">
 
-                  </ng-template>
-
-                  <div class="media-body mb-3">
-                    <h3 class="mt-0"><b>Identificativo del progetto: <b class="text-info">{{progetto.value.projectNumber}}</b></b></h3>
-                    <span>{{progetto.value.materiale}}</span>
-                    <span *ngIf="progetto.value.calpestabile">Calpestabile</span>
-                    <span *ngIf="progetto.value.luminosa">{{progetto.value.luminosa}}</span>
-                    <span *ngIf="progetto.value.opalino">- {{progetto.value.opalino}}</span>
-                    <span *ngIf="progetto.value.palo">- Altezza palo: {{progetto.value.palo}} m</span>
-                    <span *ngIf="progetto.value.base">- misura
-                      {{progetto.value.base}}x{{progetto.value.altezza}}cm</span>
-                    <span *ngIf="progetto.value.diametro">- diametro {{progetto.value.diametro}}cm</span>
-                    <span *ngIf="progetto.value.laminazione">- laminazione {{progetto.value.laminazione}}</span>
-                    <span *ngIf="progetto.value.pieghe">- Pieghe</span>
-                    <span *ngIf="progetto.value.occhielli">- Occhielli</span>
-                    <span *ngIf="progetto.value.bifacciale">- Bifacciale</span>
-                  </div>
-                </li>
-                <mat-divider></mat-divider>
-
-              </ul>
-
-            </div>
-          </div>
-          </span>
 
       </div>
+            <div *ngFor="let progetti of orderList | keyvalue" class="row justify-content-center mb-2">
+              <div *ngIf="progetti.value.oid === selectedOrderId">
+                <cdk-virtual-scroll-viewport [itemSize]="50" class="example-viewport">
+                  <div *ngFor="let progetto of progetti.value.progetto | keyvalue">
+                    <ul>
+                      <li class="media">
+                        <div *ngIf="progetto.value.image; else alt">
+                          <img *ngFor="let img of progetto.value.image | keyvalue" src="{{img.value}}" width="130" class="mr-3"
+                            alt="...">
+                        </div>
+                        <ng-template #alt>
+                          <img src="" alt="null img" width="130" class="mr-3">
+
+                        </ng-template>
+
+                        <div class="media-body mb-3">
+                          <h3 class="mt-0"><b>Identificativo del progetto: <b
+                                class="text-info">{{progetto.value.projectNumber}}</b></b></h3>
+                          <span>{{progetto.value.materiale}}</span>
+                          <span *ngIf="progetto.value.spessore">- spessore {{progetto.value.spessore}} mm</span>
+                          <span *ngIf="progetto.value.calpestabile">Calpestabile</span>
+                          <span *ngIf="progetto.value.luminosa">{{progetto.value.luminosa}}</span>
+                          <span *ngIf="progetto.value.opalino">- {{progetto.value.opalino}}</span>
+                          <span *ngIf="progetto.value.palo">- Altezza palo: {{progetto.value.palo}} m</span>
+                          <span *ngIf="progetto.value.base">- misura
+                            {{progetto.value.base}}x{{progetto.value.altezza}}cm</span>
+                          <span *ngIf="progetto.value.diametro">- diametro {{progetto.value.diametro}}cm</span>
+                          <span *ngIf="progetto.value.laminazione">- laminazione {{progetto.value.laminazione}}</span>
+                          <span *ngIf="progetto.value.pieghe">- Pieghe</span>
+                          <span *ngIf="progetto.value.occhielli">- Occhielli</span>
+                          <span *ngIf="progetto.value.bifacciale">- Bifacciale</span>
+                        </div>
+                      </li>
+                      <mat-divider></mat-divider>
+
+                    </ul>
+
+                  </div>
+                </cdk-virtual-scroll-viewport>
+              </div>
+
+            </div>
 
       <div class="row justify-content-center">
         <ng-file-drag-drop (uploadedFiles)="getUploadedFiles($event)" [fileConfig]="dragDropConfig">

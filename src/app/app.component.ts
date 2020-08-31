@@ -28,8 +28,8 @@ export class AppComponent implements OnInit{
     this.authService.exit().then(
       () => {
         if (this.graphicService.getsubjectRappresentanteID().getValue() !== null){
-          this.graphicService.setsubjectRappresentanteID(null)
-          this.graphicService.getsubjectRappresentanteID().complete();
+          // this.graphicService.completesubjectRappresentanteID();
+         
         }
 
         this.storageService.setUrlImglist(null);

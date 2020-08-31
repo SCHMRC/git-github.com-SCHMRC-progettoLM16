@@ -73,9 +73,10 @@ export class InsertWorkComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.orderId = id.generate();
     this.userService.setOrderId(this.orderId);
-    
+
     this.externalWork = [
       'City Vision',
       'Evoluzione Stampa',

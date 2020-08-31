@@ -28,6 +28,7 @@ export class WorkListComponent implements OnInit {
   users: User[] = [];
   selectedIDR: string;
   show: boolean = false;
+  none: boolean = false;
 
 
 
@@ -64,13 +65,18 @@ export class WorkListComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.selectedIDR !== null){
+    if (this.selectedIDR !== null && this.selectedIDR !== 'None'){
+      this.show = false
+      this.none = false
       this.elementdata = []
       this.order = []
       this.idRappresentante = this.selectedIDR;
       this.graphicService.setsubjectRappresentanteID(this.idRappresentante);
       this.init$()
-
+    } else if (this.selectedIDR == 'None'){
+      this.show = false
+      this.none = true
+      this.elementdata = []
     }
 
   }
@@ -115,10 +121,16 @@ export class WorkListComponent implements OnInit {
       this.orderService.getAllOrder$(this.idRappresentante).subscribe(
         (data) => {
           this.reset()
-          Object.entries(data).forEach(([key, value]) => {
-            this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'] ,value['external']  ,value['completed']))
-          })
-          this.elementdata = this.order
+          if (data === undefined || data == null) {
+            this.show = true}
+            else{
+            Object.entries(data).forEach(([key, value]) => {
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'], value['external'], value['completed']))
+            })
+            this.elementdata = this.order
+
+            }
+
 
         }
       )
@@ -231,6 +243,12 @@ export class WorkListComponent implements OnInit {
   reset() {
     this.elementdata = []
     this.order = []
+  }
+
+  /*chiamata importante perchè mi chiude il subscribe con this.rappresentanteID
+  e soprattutto crea un nuovo BehaviorSubject inizializzato a null*/
+  ngOnDestroy() {
+    this.graphicService.completesubjectRappresentanteID()
   }
 
 

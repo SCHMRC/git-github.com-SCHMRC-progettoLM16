@@ -4,8 +4,8 @@
   <mat-form-field appearance="fill">
     <mat-label>Seleziona Id rappresentante</mat-label>
     <select matNativeControl [(ngModel)]="selectedIDR" name="select" (change)="onSubmit()">
-      <option value="" selected></option>
-      <option *ngFor="let user of users | keyvalue" [value]="user.value.uId">
+      <option value="None" selected>None</option>
+      <option *ngFor="let user of users | keyvalue" [value]="user.value.uId" >
         {{user.value.name}}
       </option>
     </select>
@@ -26,6 +26,13 @@
   <div class="container">
     <h1 class="display-4">Elenco Vuoto</h1>
     <p class="lead">Non ci sono ordini presenti, puoi aggiungeli nella sezione Inserisci Ordini</p>
+  </div>
+</div>
+
+<div *ngIf="none" class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Seleziona Id Rappresentante</h1>
+    <p class="lead">Seleziona Id Rappresentante che vuoi gestire</p>
   </div>
 </div>
 

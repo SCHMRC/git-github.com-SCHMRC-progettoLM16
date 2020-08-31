@@ -27,6 +27,13 @@ export class GraphicService {
     return this.subjectRappresentanteID;
   }
 
+  public completesubjectRappresentanteID(): boolean{
+    this.subjectRappresentanteID.complete();
+    this.subjectRappresentanteID.unsubscribe();
+    this.subjectRappresentanteID = new BehaviorSubject(null);
+    return  this.subjectRappresentanteID.closed;
+  }
+
   temp() {
 
   }

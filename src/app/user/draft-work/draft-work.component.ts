@@ -5,6 +5,7 @@ import { OrderService } from 'src/app/services/order.service';
 import { StorageService } from 'src/app/services/storage.service';
 import { ToastrService } from 'ngx-toastr';
 import { Project } from 'src/app/services/project';
+import { analytics } from 'firebase';
 
 //tslint:disable
 @Component({
@@ -26,13 +27,15 @@ export class DraftWorkComponent implements OnInit {
   userId: string;
   idProject: string;
   files: File[] = [];
-  test: any[] =[]
+  test: any[] =[];
+
 
   constructor(private storageService: StorageService, private orderService: OrderService, private graphicService: GraphicService, private toastService: ToastrService) {
 
   }
 
   ngOnInit(): void {
+
       this.graphicService.getsubjectRappresentanteID().subscribe(
         (rappresentanteId) => {
           this.orderService.getAllOrder(rappresentanteId).then((snapshot) =>{
@@ -67,7 +70,7 @@ export class DraftWorkComponent implements OnInit {
             })
           })
         })
-      })
+      }).unsubscribe()
 
   }
 
@@ -79,11 +82,13 @@ export class DraftWorkComponent implements OnInit {
           this.storageService.storageDraft(this.selectedOrderId, this.idProject, this.userId, element)
         })
         resolve(this.toastService.success('bozza inserita correttamente'));
-      })
+      }).unsubscribe()
     }
     ).catch((error)=>{
       this.toastService.error(`Qualcosa è andato storto:${error}`);
     })
   }
+
+
 
 }

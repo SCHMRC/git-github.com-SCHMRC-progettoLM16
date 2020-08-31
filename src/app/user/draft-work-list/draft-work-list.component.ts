@@ -7,6 +7,8 @@ import { Lightbox } from 'ngx-lightbox';
 import { GraphicService } from 'src/app/services/graphic.service';
 import { ThemePalette } from '@angular/material/core';
 import { BehaviorSubject } from 'rxjs';
+import { Route } from '@angular/router';
+import { Router } from '@angular/router';
 //tslint:disable
 
 
@@ -43,7 +45,7 @@ export class DraftWorkListComponent implements OnInit {
   @Output() dataOut = new EventEmitter()
 
 
-  constructor(private graphicService: GraphicService, private lightbox: Lightbox, private orderService: OrderService, private userService: UserService) { }
+  constructor(private router: Router, private graphicService: GraphicService, private lightbox: Lightbox, private orderService: OrderService, private userService: UserService) { }
 
   ngOnInit(): void {
     this.graphicService.getSubject().subscribe((data)=>{
@@ -147,9 +149,12 @@ export class DraftWorkListComponent implements OnInit {
   }
 
   public accept(){
+    let param;
+    (this.user.utente == 'rappresentante') ? param = this.user.uId : param = this.graphicService.getsubjectRappresentanteID().getValue()
     Object.entries(this.task.subtasks).forEach(([key,value])=> {
       if (value['completed']){
-        this.orderService.acceptSingleDraft(this.user.uId, this.orderID, value['idproject'])
+        this.orderService.acceptSingleDraft(param, this.orderID, value['idproject'])
+        console.log(value)
       }
     })
   }
@@ -196,6 +201,7 @@ export class DraftWorkListComponent implements OnInit {
 
   removeDraft() {
     let rappId = this.userID.getValue();
+    console.log(this.urlimg);
     Object.entries(this.urlimg).forEach(([key,value])=>{
       if(value['completed']){
         this.orderService.removeSingleDraft(rappId, this.orderID, value['idproject']).then(() => { console.log('ok') })
@@ -206,15 +212,24 @@ export class DraftWorkListComponent implements OnInit {
     })*/
   }
 
-  completed(){
+  completed() {
     const userId = this.graphicService.getsubjectRappresentanteID().getValue()
-    this.orderService.setCompletedOrder(userId,this.orderID);
+    this.orderService.setCompletedOrder(userId, this.orderID);
 
   }
 
-  external(){
+  external() {
     const userId = this.graphicService.getsubjectRappresentanteID().getValue()
     this.orderService.setExternalOrder(userId, this.orderID);
   }
+
+  weTransfer(){
+    this.router.navigateByUrl('https://wetransfer.com')
+  }
+
+
+
+
+
 
 }
