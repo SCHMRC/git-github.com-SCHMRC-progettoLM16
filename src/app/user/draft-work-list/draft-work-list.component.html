@@ -1,5 +1,4 @@
-
-  <form #myform="ngForm" (ngSubmit)="onSubmit()">
+<form #myform="ngForm">
     <mat-form-field>
       <mat-label>Seleziona Ordine</mat-label>
       <mat-select class="mdb-select md-form colorful-select dropdown-primary" name="orderID" [(ngModel)]="orderID" (selectionChange)="onSubmit()">
@@ -13,30 +12,19 @@
   <div class="jumbotron" *ngIf="result">
     <div class="row justify-content-center">
       <span class="card m-2" *ngFor="let image of task.subtasks ; index as i" style="width: 12rem;">
-
         <img class="card-img-top" [src]="image.src" alt="id progetto{{image.idproject}}" (click)="open(i)"
           style="position: relative;">
         <div class="card-header">
-          id Bozza: {{image.idproject}}
+          id Progetto: {{image.idproject}}
         </div>
         <div class="card-body">
-          <span><b>Nome File:</b> {{nome}} - {{progetti[i]['materiale']}} - copie {{progetti[i]['copie']}}</span>
-          <span *ngIf="progetti[i]['spessore']">spessore {{progetti[i]['spessore']}} mm</span>
-          <span *ngIf="progetti[i]['calpestabile']"> - Calpestabile</span>
-          <span *ngIf="progetti[i]['luminosa']"> - {{progetti[i]['luminosa']}}</span>
-          <span *ngIf="progetti[i]['opalino']"> - {{progetti[i]['opalino']}}</span>
-          <span *ngIf="progetti[i]['palo']"> - Altezza palo: {{progetti[i]['palo']}} m</span>
-          <span *ngIf="progetti[i]['base']"> - misura {{progetti[i]['base']}}x{{progetti[i]['altezza']}}cm</span>
-          <span *ngIf="progetti[i]['diametro']"> - diametro {{progetti[i]['diametro']}}cm</span>
-          <span *ngIf="progetti[i]['laminazione']"> - laminazione {{progetti[i]['laminazione']}}</span>
-          <span *ngIf="progetti[i]['pieghe']"> - Pieghe</span>
-          <span *ngIf="progetti[i]['occhielli']"> - Occhielli</span>
-          <span *ngIf="progetti[i]['bifacciale']"> - Bifacciale</span>
+          {{image | json}}
+
         </div>
         <div *ngIf="image.modifiche" class="card-footer">
           <b>Modifiche da apportare: {{image.modifiche}}</b>
         </div>
-        <div *ngIf="!successPage" class="card-footer">
+        <div class="card-footer">
           <mat-label>spunta per selezionare</mat-label>
           <mat-checkbox class="float-right" [(ngModel)]="image.completed"
             value="{{image.idproject}}"></mat-checkbox>
@@ -46,7 +34,7 @@
   </div>
 
 
-<div class="row justify-content-center" *ngIf="result && !successPage">
+<div class="row justify-content-center" *ngIf="result">
       <button class="btn btn-primary mr-3 waves-light rounded-pill" mdbBtn mdbWavesEffect type="button" data-toggle="modal" data-target="#modifica" (click)="modal()">
         Modifiche da apportare
       </button>
@@ -64,22 +52,9 @@
 
 </div>
 
-<div class="row justify-content-center" *ngIf="result && successPage">
-  <button class="btn btn-success mr-3 waves-light rounded-pill" mdbBtn mdbWavesEffect type="button"
-    (click)="completed()">Ordine Completo</button>
-  <button class="btn btn-warning mr-3 waves-light rounded-pill" mdbBtn mdbWavesEffect type="button"
-      (click)="external()">Ordine Esterno </button>
-      <button class="btn btn-outline-dark mr-3 waves-light rounded-pill" mdbBtn mdbWavesEffect type="button"
-        ><a href="https://wetransfer.com" target="_blank">Invia tramite WeTransfer</a></button>
-</div>
-
-
 </div>
 <ng-template #alt>
-  <div class="jumbotron" *ngIf="!successPage">
+  <div class="jumbotron">
     Non ci sono Bozze da visualizzare
-    </div>
-    <div class="jumbotron" *ngIf="successPage">
-      Non ci sono Bozze accettate
     </div>
 </ng-template>

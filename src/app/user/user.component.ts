@@ -96,4 +96,5 @@ export class UserComponent implements OnInit {
     (label === 'Ordini confermati') ? this.graphicService.setSubject(true) : this.graphicService.setSubject(false);
 
   }
+
 }

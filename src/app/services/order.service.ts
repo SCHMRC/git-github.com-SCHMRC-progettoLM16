@@ -48,6 +48,10 @@ export class OrderService {
     return this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/`).once('value')
   }
 
+  public $getOneDraft(userID: string, orderID: string): Observable<any[]>{
+    return this.angularFireDatabase.object<any[]>(`${ORDER_PATH}/${userID}/${orderID}/`).valueChanges()
+  }
+
   public getIdImg(): BehaviorSubject<any[]>{
     return this.listIdImg;
   }
@@ -113,8 +117,8 @@ export class OrderService {
     return ref.update({accepted: true})
   }
 
-  public acceptSingleDraft(userID: string, orderID: string, projectId: string): Promise<any> {
-    const ref = this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/draft/${projectId}/image`)
+  public acceptSingleDraft(userID: string, orderID: string, projectId: string, keyImage: string): Promise<any> {
+    const ref = this.angularFireDatabase.database.ref(`${ORDER_PATH}/${userID}/${orderID}/draft/${projectId}/${keyImage}`)
     return ref.update({ accepted: true })
   }
 

@@ -1,14 +1,8 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { Project } from 'src/app/services/project';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { OrderService } from 'src/app/services/order.service';
 import { UserService } from 'src/app/services/user.service';
 import { Lightbox } from 'ngx-lightbox';
 import { GraphicService } from 'src/app/services/graphic.service';
-import { ThemePalette } from '@angular/material/core';
-import { BehaviorSubject } from 'rxjs';
-import { Route } from '@angular/router';
-import { Router } from '@angular/router';
 //tslint:disable
 
 
@@ -23,14 +17,11 @@ export class DraftWorkListComponent implements OnInit {
   result: any;
   user = this.userService.getSubject().getValue();
   userID = this.graphicService.getsubjectRappresentanteID();
-  registrationForm: FormGroup;
   urlimg: Array<any> = [];
-  progetti: Project[] = [];
   show = false;
   checked: boolean;
   data:any
   nome: string;
-  successPage: boolean;
 
 /**/
   task: any = {
@@ -45,12 +36,9 @@ export class DraftWorkListComponent implements OnInit {
   @Output() dataOut = new EventEmitter()
 
 
-  constructor(private router: Router, private graphicService: GraphicService, private lightbox: Lightbox, private orderService: OrderService, private userService: UserService) { }
+  constructor( private graphicService: GraphicService, private lightbox: Lightbox, private orderService: OrderService, private userService: UserService) { }
 
   ngOnInit(): void {
-    this.graphicService.getSubject().subscribe((data)=>{
-      this.successPage = data;
-    })
     this.checked = false;
     this.orders = [];
     if(this.user.utente == 'rappresentante'){
@@ -74,32 +62,66 @@ export class DraftWorkListComponent implements OnInit {
     (this.user.utente == 'rappresentante') ? param = this.user.uId : param = this.graphicService.getsubjectRappresentanteID().getValue()
     this.orderService.getOneDraft(param, this.orderID).then((snapshot) => {
       this.result = snapshot.val();
-
+      console.log(this.result)
 
         this.nome = this.result['nome']
-        Object.entries(this.result['progetto']).forEach(([key, value]) => {
-          let progetto: Project = {
-            luminosa: value['luminosa'],
-            palo: value['palo'],
-            forma: value['forma'],
-            materiale: value['materiale'],
-            spessore: value['spessore'],
-            laminazione: value['laminazione'],
-            calpestabile: value['calpestabile'],
-            colore: value['colore'],
-            opalino: value['opalino'],
-            pieghe: value['pieghe'],
-            occhielli: value['occhielli'],
-            base: value['base'],
-            altezza: value['altezza'],
-            lato: value['lato'],
-            diametro: value['diametro'],
-            copie: value['copie'],
-            bifacciale: value['bifacciale'],
-          }
-          this.progetti.push(progetto)
+      if (this.result['draft']) {
+        Object.entries(this.result['draft']).forEach(([key, value]) => {
+          Object.entries(value).forEach(([k,v])=>{
+            let album = {
+              src: v['img'],
+              caption: `identificativo della bozza: ${key} `,
+              thumb: '',
+              idproject: key,
+              modifiche: v['modifiche'],
+              orderId: this.orderID,
+              name: 'Primary',
+              color: 'primary',
+              completed: v['accepted'],
+              keyImage: k
+            }
+            console.log(album)
+
+              if (!album['completed']) {
+                this.urlimg.push(album)
+              }
+
+
+          })
+
         })
 
+
+        if (this.urlimg.length === 0) {
+          this.show = false;
+          return
+        }
+
+          let task = {
+            name: 'Seleziona Tutto',
+            color: 'primary',
+            subtasks: this.urlimg
+          }
+
+
+        this.task = task;
+        this.show = true
+      }else{
+        this.show = false
+
+      }
+
+    });
+    this.orderService.setIdImg(this.urlimg);
+  }
+
+ /* onSubmit$(){
+    this.urlimg = []
+    let param = '';
+    (this.user.utente == 'rappresentante') ? param = this.user.uId : param = this.graphicService.getsubjectRappresentanteID().getValue()
+    this.orderService.$getOneDraft(param,this.orderID).subscribe((data)=>{
+      this.result = data;
+      this.nome = data['nome']
       if (this.result['draft']) {
         Object.entries(this.result['draft']).forEach(([key, value]) => {
           let album = {
@@ -113,7 +135,7 @@ export class DraftWorkListComponent implements OnInit {
             color: 'primary',
             completed: value['image']['accepted'],
           }
-          if(this.graphicService.getSubject().getValue()){
+          if (this.graphicService.getSubject().getValue()) {
             if (album['completed']) {
               this.urlimg.push(album)
             }
@@ -135,38 +157,25 @@ export class DraftWorkListComponent implements OnInit {
         }
         this.task = task;
         this.show = true
-      }else{
+      } else {
         this.show = false
 
       }
+    })
+  }*/
 
-    });
-    this.orderService.setIdImg(this.urlimg);
-  }
-
-  public getOrderID() {
-    return this.registrationForm.get('orderID').value;
-  }
 
   public accept(){
     let param;
     (this.user.utente == 'rappresentante') ? param = this.user.uId : param = this.graphicService.getsubjectRappresentanteID().getValue()
     Object.entries(this.task.subtasks).forEach(([key,value])=> {
       if (value['completed']){
-        this.orderService.acceptSingleDraft(param, this.orderID, value['idproject'])
+        this.orderService.acceptSingleDraft(param, this.orderID, value['idproject'], value['keyImage'])
         console.log(value)
       }
     })
   }
 
-  public singleAccept(draftId: any[]){
-    Object.entries(draftId).forEach(([key,value])=>{
-      this.orderService.acceptSingleDraft(this.user.uId, this.orderID, value)
-    })
-
-
-
-  }
 
   open(index: number): void {
     // open lightbox
@@ -212,20 +221,7 @@ export class DraftWorkListComponent implements OnInit {
     })*/
   }
 
-  completed() {
-    const userId = this.graphicService.getsubjectRappresentanteID().getValue()
-    this.orderService.setCompletedOrder(userId, this.orderID);
 
-  }
-
-  external() {
-    const userId = this.graphicService.getsubjectRappresentanteID().getValue()
-    this.orderService.setExternalOrder(userId, this.orderID);
-  }
-
-  weTransfer(){
-    this.router.navigateByUrl('https://wetransfer.com')
-  }
 
 
 
