@@ -11,10 +11,8 @@
 
 <div class="container mat-elevation-z5" *ngIf="show;else alt">
   <div class="jumbotron" *ngIf="result">
-    {{result | json}}
     <div class="row justify-content-center">
       <span class="card m-2" *ngFor="let image of task.subtasks ; index as i" style="width: 12rem;">
-        {{image | json}}
 
         <img class="card-img-top" [src]="image.src" alt="id progetto{{image.idproject}}" (click)="open(i)"
           style="position: relative;">

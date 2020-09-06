@@ -40,16 +40,21 @@
 <div *ngIf="elementdata">
 <div class="container" *ngFor="let element of elementdata | keyvalue ;index as i">
   <mat-accordion>
+
     <mat-expansion-panel class="mb-1" (opened)="panelOpenState[i] = true" (closed)="panelOpenState[i] = false">
-      <mat-expansion-panel-header  [ngClass]="{'bg-success': element.value.completed , 'bg-warning': element.value.external}">
+      <mat-expansion-panel-header [ngClass]="{'bg-success': element.value.completed , 'bg-warning': element.value.external}">
         <mat-panel-title style="width: 312px;" [ngClass]="{'text-white': element.value.completed}">
-          <p><b>{{element.value.nome}}</b></p>
+          <span><b>{{element.value.nome}}</b></span>
           <p *ngIf="element.value.externalWork !== 'interno' && !element.value.external"> - da inviare a: {{element.value.externalWork}}</p>
           <p *ngIf="element.value.external"> - Inviato a: {{element.value.externalWork}}</p>
           <p *ngIf="element.value.completed"> - Ordine Completo</p>
+          <p *ngIf="!element.value.external && element.value.draft[0] !== 'vuoto' && !element.value.completed"
+            class="text-primary ml-3 ">{{text}}</p>
         </mat-panel-title>
         <mat-panel-description>
           {{element.value.data}}
+
+
         </mat-panel-description>
       </mat-expansion-panel-header>
 
@@ -146,5 +151,6 @@
       </ng-template>
     </mat-expansion-panel>
   </mat-accordion>
+
 </div>
 </div>

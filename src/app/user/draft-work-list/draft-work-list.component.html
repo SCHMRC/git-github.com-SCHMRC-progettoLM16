@@ -17,11 +17,7 @@
         <div class="card-header">
           id Progetto: {{image.idproject}}
         </div>
-        <div class="card-body">
-          {{image | json}}
-
-        </div>
-        <div *ngIf="image.modifiche" class="card-footer">
+        <div *ngIf="image.modifiche" class="card-body">
           <b>Modifiche da apportare: {{image.modifiche}}</b>
         </div>
         <div class="card-footer">

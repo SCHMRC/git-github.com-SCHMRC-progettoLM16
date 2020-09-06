@@ -5,6 +5,7 @@ import { Order } from 'src/app/services/order';
 import { User } from 'src/app/services/user';
 import { GraphicService } from 'src/app/services/graphic.service';
 import { StorageService } from 'src/app/services/storage.service';
+import { Observable } from 'rxjs';
 
 
 
@@ -29,6 +30,8 @@ export class WorkListComponent implements OnInit {
   selectedIDR: string;
   show: boolean = false;
   none: boolean = false;
+  text = 'Bozza Presente';
+  obs: Observable<any[]>;
 
 
 
@@ -92,7 +95,8 @@ export class WorkListComponent implements OnInit {
         this.orderService.getAllOrder$(this.idRappresentante).subscribe(
           (data) => {
             Object.entries(data).forEach(([key, value]) => {
-              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'],value['external']  ,value['completed']))
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'],
+                value['externalWork'], value['external'], value['completed'], value['draft']))
             }
             )
             this.elementdata = this.order.filter(res => { return res.nome.match(this.input) })
@@ -105,7 +109,8 @@ export class WorkListComponent implements OnInit {
         this.orderService.getAllOrder$(this.user.uId).subscribe(
           (data) => {
             Object.entries(data).forEach(([key, value]) => {
-              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'] ,value['external'] ,value['completed']))
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'],
+                value['externalWork'], value['external'], value['completed'], value['draft']))
             }
             )
             this.elementdata = this.order.filter(res => { return res.nome.match(this.input) })
@@ -118,14 +123,15 @@ export class WorkListComponent implements OnInit {
 
   init$() {
     if (this.user.utente == 'grafico') {
-      this.orderService.getAllOrder$(this.idRappresentante).subscribe(
+     const subscription = this.orderService.getAllOrder$(this.idRappresentante).subscribe(
         (data) => {
           this.reset()
           if (data === undefined || data == null) {
             this.show = true}
             else{
             Object.entries(data).forEach(([key, value]) => {
-              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'], value['external'], value['completed']))
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'],
+                value['progetto'], value['externalWork'], value['external'], value['completed'], value['draft']))
             })
             this.elementdata = this.order
 
@@ -145,7 +151,8 @@ export class WorkListComponent implements OnInit {
             this.show = false;
             Object.entries(data).forEach(([key, value]) => {
               console.log(value['completed'])
-              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'] ,value['external'] ,value['completed']))
+              this.order.push(new Order(value['data'], value['oid'], value['nome'], value['pezzi'], value['progetto'], value['externalWork'] ,
+                value['external'], value['completed'], value['draft']))
             })
             this.elementdata = this.order
           }

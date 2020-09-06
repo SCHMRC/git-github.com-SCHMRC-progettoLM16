@@ -45,6 +45,7 @@ export class InsertWorkComponent implements OnInit {
   imageUrl: string[][] = [];
   reset: boolean = false;
   externalWork: string[] = []
+  draft: any[] = ['vuoto'];
 
 
 
@@ -119,7 +120,9 @@ export class InsertWorkComponent implements OnInit {
       this.project,
       this.formGroup['value']['formArray'][2]['externalWork'],
       false,
-      false
+      false,
+      this.draft
+
     )
 
     /*this.order =
@@ -173,7 +176,8 @@ export class InsertWorkComponent implements OnInit {
       this.project,
       this.formGroup['value']['formArray'][2]['externalWork'],
       false,
-      false
+      false,
+      this.draft
     )
 
     /*this.order =
